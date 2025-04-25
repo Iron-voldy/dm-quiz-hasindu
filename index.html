@@ -1,0 +1,2839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discrete Mathematics Mid-Exam Quiz</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+            --error-color: #cf6679;
+            --correct-color: #4caf50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #9965f4;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.topic-btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            text-align: left;
+            font-size: 18px;
+            padding: 15px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .option {
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #2a2a2a;
+        }
+        
+        .option.selected {
+            background-color: var(--primary-color);
+            color: black;
+        }
+        
+        .option.correct {
+            background-color: var(--correct-color);
+            color: black;
+        }
+        
+        .option.incorrect {
+            background-color: var(--error-color);
+            color: black;
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .result-detail {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-number {
+            text-align: right;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .summary div {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .question-content {
+            margin-bottom: 20px;
+        }
+        
+        .graph {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .equation {
+            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 4px;
+            animation: fadeInOut 3s forwards;
+            z-index: 100;
+        }
+        
+        .alert-correct {
+            background-color: var(--correct-color);
+            color: black;
+        }
+        
+        .alert-incorrect {
+            background-color: var(--error-color);
+            color: black;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .controls button {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Discrete Mathematics Mid-Exam Quiz</h1>
+        
+        <!-- Topic Selection Screen -->
+        <div id="topic-selection" class="card">
+            <h2>Select a Topic</h2>
+            <button class="topic-btn" data-topic="sets">Sets</button>
+            <button class="topic-btn" data-topic="functions">Functions</button>
+            <button class="topic-btn" data-topic="sequences">Sequences</button>
+            <button class="topic-btn" data-topic="counting1">Counting I</button>
+            <button class="topic-btn" data-topic="counting2">Counting II</button>
+            <button class="topic-btn" data-topic="induction">Mathematical Induction</button>
+            <button class="topic-btn" data-topic="graphs">Graphs</button>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            
+            <div class="question-number" id="question-number">Question 1 of 20</div>
+            
+            <div class="card">
+                <div id="question-container">
+                    <div class="question-content" id="question-text"></div>
+                    <div class="options" id="options-container"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="prev-btn" disabled>Previous</button>
+                <button id="next-btn">Next</button>
+                <button id="submit-btn" class="hidden">Submit Quiz</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <div class="card">
+                <h2>Quiz Results</h2>
+                <div class="result" id="result-text"></div>
+                
+                <div class="summary">
+                    <div>
+                        <p>Total Questions</p>
+                        <p class="score">20</p>
+                    </div>
+                    <div>
+                        <p>Correct Answers</p>
+                        <p class="score" id="correct-count">0</p>
+                    </div>
+                    <div>
+                        <p>Your Score</p>
+                        <p class="score" id="score-percentage">0%</p>
+                    </div>
+                </div>
+                
+                <button id="review-btn">Review Answers</button>
+                <button id="back-to-topics-btn">Back to Topics</button>
+            </div>
+        </div>
+        
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden">
+            <h2>Review Answers</h2>
+            <div id="review-container"></div>
+            <button id="back-to-results-btn">Back to Results</button>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz state
+        const state = {
+            currentTopic: '',
+            questions: [],
+            currentQuestionIndex: 0,
+            userAnswers: [],
+            score: 0
+        };
+        
+        // Constants
+        const TOTAL_QUESTIONS = 20;
+        
+        // DOM elements
+        const topicSelection = document.getElementById('topic-selection');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const reviewScreen = document.getElementById('review-screen');
+        const questionNumber = document.getElementById('question-number');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultText = document.getElementById('result-text');
+        const correctCount = document.getElementById('correct-count');
+        const scorePercentage = document.getElementById('score-percentage');
+        const progressBar = document.getElementById('progress');
+        const reviewContainer = document.getElementById('review-container');
+        
+        // Event listeners
+        document.querySelectorAll('.topic-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                state.currentTopic = button.dataset.topic;
+                loadQuestions(state.currentTopic);
+            });
+        });
+        
+        prevBtn.addEventListener('click', goToPreviousQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        submitBtn.addEventListener('click', submitQuiz);
+        document.getElementById('review-btn').addEventListener('click', showReviewScreen);
+        document.getElementById('back-to-topics-btn').addEventListener('click', backToTopics);
+        document.getElementById('back-to-results-btn').addEventListener('click', () => {
+            reviewScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+        });
+        
+        // Load questions based on selected topic
+        function loadQuestions(topic) {
+            state.questions = quizData[topic] || [];
+            state.currentQuestionIndex = 0;
+            state.userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+            state.score = 0;
+            
+            // Show quiz screen
+            topicSelection.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            // Display first question
+            displayQuestion();
+        }
+        
+        // Display the current question
+        function displayQuestion() {
+            const question = state.questions[state.currentQuestionIndex];
+            questionNumber.textContent = `Question ${state.currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}`;
+            
+            // Update progress bar
+            progressBar.style.width = `${((state.currentQuestionIndex + 1) / TOTAL_QUESTIONS) * 100}%`;
+            
+            // Display question text with any graphs/equations
+            if (question.graph) {
+                questionText.innerHTML = `<p>${question.text}</p><div class="graph">${question.graph}</div>`;
+            } else if (question.equation) {
+                questionText.innerHTML = `<p>${question.text}</p><div class="equation">${question.equation}</div>`;
+            } else {
+                questionText.innerHTML = `<p>${question.text}</p>`;
+            }
+            
+            // Display options
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                // If this option is already selected
+                if (state.userAnswers[state.currentQuestionIndex] === index) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update buttons
+            prevBtn.disabled = state.currentQuestionIndex === 0;
+            
+            if (state.currentQuestionIndex === TOTAL_QUESTIONS - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+        
+        // Handle option selection
+        function selectOption(optionIndex) {
+            state.userAnswers[state.currentQuestionIndex] = optionIndex;
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+                if (parseInt(option.dataset.index) === optionIndex) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+        
+        // Navigate to previous question
+        function goToPreviousQuestion() {
+            if (state.currentQuestionIndex > 0) {
+                state.currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+        
+        // Navigate to next question
+        function goToNextQuestion() {
+            if (state.currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                // Check if an option is selected
+                if (state.userAnswers[state.currentQuestionIndex] !== null) {
+                    const currentQuestion = state.questions[state.currentQuestionIndex];
+                    const userAnswer = state.userAnswers[state.currentQuestionIndex];
+                    
+                    // Check if answer is correct and show alert
+                    if (userAnswer === currentQuestion.correctIndex) {
+                        showAlert('Correct!', true);
+                    } else {
+                        showAlert('Incorrect! The correct answer is: ' + currentQuestion.options[currentQuestion.correctIndex], false);
+                    }
+                    
+                    state.currentQuestionIndex++;
+                    displayQuestion();
+                } else {
+                    showAlert('Please select an answer', false);
+                }
+            }
+        }
+        
+        // Submit the quiz
+        function submitQuiz() {
+            // Check if the last question has been answered
+            if (state.userAnswers[state.currentQuestionIndex] === null) {
+                showAlert('Please select an answer', false);
+                return;
+            }
+            
+            // Calculate score
+            calculateScore();
+            
+            // Show results screen
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            // Display results
+            correctCount.textContent = state.score;
+            scorePercentage.textContent = `${(state.score / TOTAL_QUESTIONS) * 100}%`;
+            
+            // Feedback based on score
+            if (state.score === TOTAL_QUESTIONS) {
+                resultText.textContent = 'Perfect Score! Excellent job!';
+            } else if (state.score >= Math.floor(TOTAL_QUESTIONS * 0.8)) {
+                resultText.textContent = 'Great job! You did very well!';
+            } else if (state.score >= Math.floor(TOTAL_QUESTIONS * 0.6)) {
+                resultText.textContent = 'Good effort! You passed the quiz.';
+            } else {
+                resultText.textContent = 'Keep practicing! You can improve.';
+            }
+        }
+        
+        // Calculate the final score
+        function calculateScore() {
+            state.score = 0;
+            state.userAnswers.forEach((answer, index) => {
+                if (answer === state.questions[index].correctIndex) {
+                    state.score++;
+                }
+            });
+        }
+        
+        // Show alert message
+        function showAlert(message, isCorrect) {
+            // Remove any existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alert = document.createElement('div');
+            alert.className = `alert ${isCorrect ? 'alert-correct' : 'alert-incorrect'}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            // Remove alert after animation
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+        
+        // Show review screen
+        function showReviewScreen() {
+            resultsScreen.classList.add('hidden');
+            reviewScreen.classList.remove('hidden');
+            
+            reviewContainer.innerHTML = '';
+            state.questions.forEach((question, index) => {
+                const userAnswer = state.userAnswers[index];
+                const isCorrect = userAnswer === question.correctIndex;
+                
+                const questionElement = document.createElement('div');
+                questionElement.className = `result-detail ${isCorrect ? 'correct' : 'incorrect'}`;
+                
+                // Question display with graph or equation if available
+                let questionHTML = `<h3>Question ${index + 1}</h3><p>${question.text}</p>`;
+                
+                if (question.graph) {
+                    questionHTML += `<div class="graph">${question.graph}</div>`;
+                } else if (question.equation) {
+                    questionHTML += `<div class="equation">${question.equation}</div>`;
+                }
+                
+                // User's answer and correct answer
+                questionHTML += `<p>Your answer: ${question.options[userAnswer]}</p>`;
+                
+                if (!isCorrect) {
+                    questionHTML += `<p>Correct answer: ${question.options[question.correctIndex]}</p>`;
+                }
+                
+                questionElement.innerHTML = questionHTML;
+                reviewContainer.appendChild(questionElement);
+            });
+        }
+        
+        // Go back to topic selection
+        function backToTopics() {
+            resultsScreen.classList.add('hidden');
+            topicSelection.classList.remove('hidden');
+        }
+        
+        // Quiz data
+        const quizData = {
+            sets: [
+                {
+                    text: "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ∩ B?",
+                    options: ["{3, 4}", "{1, 2, 5, 6}", "{1, 2, 3, 4, 5, 6}", "∅"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <ellipse cx="100" cy="100" rx="70" ry="60" fill="rgba(52, 152, 219, 0.3)" stroke="rgb(52, 152, 219)" />
+                        <text x="60" y="85" font-family="Arial" font-size="14">A</text>
+                        <text x="55" y="105" font-family="Arial" font-size="12">{1,2,3,4}</text>
+                        
+                        <ellipse cx="200" cy="100" rx="70" ry="60" fill="rgba(231, 76, 60, 0.3)" stroke="rgb(231, 76, 60)" />
+                        <text x="215" y="85" font-family="Arial" font-size="14">B</text>
+                        <text x="190" y="105" font-family="Arial" font-size="12">{3,4,5,6}</text>
+                        
+                        <path d="M 135 100 A 30 30 0 0 0 165 100 A 30 30 0 0 0 135 100" fill="rgba(142, 68, 173, 0.5)" />
+                        <text x="140" y="105" font-family="Arial" font-size="12">{3,4}</text>
+                    </svg>`
+                },
+                {
+                    text: "Let U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, A = {1, 3, 5, 7, 9}, and B = {2, 4, 6, 8}. What is (A ∪ B)ᶜ?",
+                    options: ["{10}", "{1, 3, 5, 7, 9}", "{2, 4, 6, 8}", "∅"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <rect x="30" y="30" width="240" height="140" fill="#f1f1f1" stroke="black" />
+                        <text x="35" y="50" font-family="Arial" font-size="12">U = {1,2,3,4,5,6,7,8,9,10}</text>
+                        
+                        <ellipse cx="110" cy="110" rx="70" ry="50" fill="rgba(52, 152, 219, 0.3)" stroke="rgb(52, 152, 219)" />
+                        <text x="100" y="110" font-family="Arial" font-size="12">A</text>
+                        
+                        <ellipse cx="190" cy="110" rx="70" ry="50" fill="rgba(231, 76, 60, 0.3)" stroke="rgb(231, 76, 60)" />
+                        <text x="180" y="110" font-family="Arial" font-size="12">B</text>
+                        
+                        <circle cx="250" cy="50" r="15" fill="rgba(142, 68, 173, 0.5)" stroke="rgb(142, 68, 173)" />
+                        <text x="245" y="55" font-family="Arial" font-size="12">10</text>
+                    </svg>`
+                },
+                {
+                    text: "The power set of {a, b} is:",
+                    options: ["{∅, {a}, {b}, {a, b}}", "{a, b}", "{∅, a, b, {a, b}}", "{{a}, {b}, {a, b}}"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If A = {1, 2, 3} and B = {x, y, z}, how many elements are in A × B?",
+                    options: ["3", "6", "9", "12"],
+                    correctIndex: 2,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <rect x="60" y="40" width="180" height="120" fill="none" stroke="white" />
+                        
+                        <text x="120" y="30" font-family="Arial" font-size="14">A × B</text>
+                        
+                        <text x="80" y="60" font-family="Arial" font-size="12">(1,x)</text>
+                        <text x="130" y="60" font-family="Arial" font-size="12">(1,y)</text>
+                        <text x="180" y="60" font-family="Arial" font-size="12">(1,z)</text>
+                        
+                        <text x="80" y="100" font-family="Arial" font-size="12">(2,x)</text>
+                        <text x="130" y="100" font-family="Arial" font-size="12">(2,y)</text>
+                        <text x="180" y="100" font-family="Arial" font-size="12">(2,z)</text>
+                        
+                        <text x="80" y="140" font-family="Arial" font-size="12">(3,x)</text>
+                        <text x="130" y="140" font-family="Arial" font-size="12">(3,y)</text>
+                        <text x="180" y="140" font-family="Arial" font-size="12">(3,z)</text>
+                    </svg>`
+                },
+                {
+                    text: "Let A = {1, 2, 3, 4} and B = {3, 4, 5, 6}. What is A - B?",
+                    options: ["{1, 2}", "{5, 6}", "{1, 2, 5, 6}", "{3, 4}"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If |A| = 5 and |B| = 3, what is |A × B|?",
+                    options: ["8", "15", "2", "15"],
+                    correctIndex: 1,
+                    equation: "|A × B| = |A| × |B| = 5 × 3 = 15"
+                },
+                {
+                    text: "If A = {1, 2, 3} and P(A) is the power set of A, what is |P(A)|?",
+                    options: ["3", "6", "8", "9"],
+                    correctIndex: 2,
+                    equation: "|P(A)| = 2^|A| = 2^3 = 8"
+                },
+                {
+                    text: "If A = {1, 2, 3, 4, 5}, B = {4, 5, 6, 7}, and C = {3, 5, 7, 9}, what is A ∩ B ∩ C?",
+                    options: ["{3, 5, 7}", "{5}", "{3, 4, 5}", "∅"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The symmetric difference of sets A and B, denoted A △ B, is defined as (A - B) ∪ (B - A). If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A △ B?",
+                    options: ["{1, 2, 5, 6}", "{3, 4}", "{1, 2, 3, 4, 5, 6}", "∅"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If A = {x | x is an integer and -3 ≤ x < 5}, what is |A|?",
+                    options: ["7", "8", "9", "10"],
+                    correctIndex: 1,
+                    equation: "A = {-3, -2, -1, 0, 1, 2, 3, 4}"
+                },
+                {
+                    text: "Let A = {1, 2, 3}, B = {2, 3, 4}, and C = {3, 4, 5}. What is (A ∪ B) ∩ C?",
+                    options: ["{3}", "{3, 4}", "{2, 3, 4}", "{1, 2, 3, 4, 5}"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If A and B are disjoint sets with |A| = 5 and |B| = 7, what is |A ∪ B|?",
+                    options: ["12", "35", "0", "5"],
+                    correctIndex: 0,
+                    equation: "|A ∪ B| = |A| + |B| - |A ∩ B| = 5 + 7 - 0 = 12"
+                },
+                {
+                    text: "If A = {1, 2, 3, 4}, what is the cardinality of the set of all subsets of A that contain at least 2 elements?",
+                    options: ["11", "10", "14", "16"],
+                    correctIndex: 0
+                },
+                {
+                    text: "Let U = {1, 2, 3, 4, 5, 6, 7, 8, 9}, A = {1, 3, 5, 7, 9}, and B = {1, 2, 3, 4, 5}. What is A' ∩ B'?",
+                    options: ["{6, 7, 8, 9}", "{6, 8}", "{2, 4}", "{1, 3, 5}"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If A = {1, 2, 3} and B = {x | x is a positive integer less than 4}, then:",
+                    options: ["A ⊂ B", "B ⊂ A", "A = B", "A and B are disjoint"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If A = {a, b, c, d} and B = {b, d, e, f}, what is |A ∪ B|?",
+                    options: ["4", "6", "8", "2"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The Cartesian product {1, 2} × {a, b, c} equals:",
+                    options: ["{(1, a), (1, b), (1, c), (2, a), (2, b), (2, c)}", "{(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3)}", "{(1, a), (2, b), (3, c)}", "{(1, a, 2, b, 3, c)}"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If A ⊆ B and B ⊆ C, which of the following must be true?",
+                    options: ["A = C", "A ⊆ C", "B = C", "A = B"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If U is the universal set and A and B are sets such that A ∪ B = U and A ∩ B = ∅, then A and B are:",
+                    options: ["Equal", "Subsets", "Complements", "Overlapping"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If A has m elements and B has n elements, how many elements does the power set of A × B have?",
+                    options: ["2^(m×n)", "2^m × 2^n", "(2^m)^n", "m^n"],
+                    correctIndex: 0,
+                    equation: "|P(A × B)| = 2^|A×B| = 2^(m×n)"
+                }
+            ],
+            
+            functions: [
+                {
+                    text: "A function f: X → Y is injective (one-to-one) if:",
+                    options: ["For every y in Y, there exists an x in X such that f(x) = y", "For all x₁, x₂ in X, if f(x₁) = f(x₂), then x₁ = x₂", "For all y in Y, there exists a unique x in X such that f(x) = y", "f maps each element of X to every element of Y"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="180" viewBox="0 0 300 180">
+                        <!-- Domain X -->
+                        <ellipse cx="80" cy="90" rx="40" ry="70" fill="rgba(52, 152, 219, 0.3)" stroke="rgb(52, 152, 219)" />
+                        <text x="75" y="40" font-family="Arial" font-size="14">X</text>
+                        
+                        <circle cx="80" cy="50" r="4" fill="black" />
+                        <text x="65" y="55" font-family="Arial" font-size="12">x₁</text>
+                        
+                        <circle cx="80" cy="90" r="4" fill="black" />
+                        <text x="65" y="95" font-family="Arial" font-size="12">x₂</text>
+                        
+                        <circle cx="80" cy="130" r="4" fill="black" />
+                        <text x="65" y="135" font-family="Arial" font-size="12">x₃</text>
+                        
+                        <!-- Codomain Y -->
+                        <ellipse cx="220" cy="90" rx="40" ry="70" fill="rgba(231, 76, 60, 0.3)" stroke="rgb(231, 76, 60)" />
+                        <text x="215" y="40" font-family="Arial" font-size="14">Y</text>
+                        
+                        <circle cx="220" cy="50" r="4" fill="black" />
+                        <text x="230" y="55" font-family="Arial" font-size="12">y₁</text>
+                        
+                        <circle cx="220" cy="90" r="4" fill="black" />
+                        <text x="230" y="95" font-family="Arial" font-size="12">y₂</text>
+                        
+                        <circle cx="220" cy="130" r="4" fill="black" />
+                        <text x="230" y="135" font-family="Arial" font-size="12">y₃</text>
+                        
+                        <!-- Function Mapping -->
+                        <path d="M 84 50 Q 150 40, 216 50" stroke="black" fill="transparent" />
+                        <path d="M 84 90 Q 150 80, 216 90" stroke="black" fill="transparent" />
+                        <path d="M 84 130 Q 150 140, 216 130" stroke="black" fill="transparent" />
+                    </svg>`
+                },
+                {
+                    text: "If f: A → B is a bijection and |A| = 10, then |B| equals:",
+                    options: ["10", "Less than 10", "Greater than 10", "Cannot be determined"],
+                    correctIndex: 0
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = 3x - 5. The inverse function f⁻¹(x) is:",
+                    options: ["f⁻¹(x) = (x + 5)/3", "f⁻¹(x) = (5 - x)/3", "f⁻¹(x) = 3x + 5", "f⁻¹(x) = -3x - 5"],
+                    correctIndex: 0,
+                    equation: "y = 3x - 5 ⟹ x = (y + 5)/3 ⟹ f⁻¹(x) = (x + 5)/3"
+                },
+                {
+                    text: "If f: X → Y is surjective, which statement must be true?",
+                    options: ["|X| = |Y|", "|X| ≤ |Y|", "|X| ≥ |Y|", "|X| < |Y|"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If f: X → Y and g: Y → Z are both injective functions, then the composition g ∘ f is:",
+                    options: ["Always injective", "Always surjective", "Always bijective", "None of the above"],
+                    correctIndex: 0
+                },
+                {
+                    text: "How many different functions can be defined from a set A to a set B, where |A| = 3 and |B| = 4?",
+                    options: ["12", "64", "24", "81"],
+                    correctIndex: 3,
+                    equation: "|B|^|A| = 4^3 = 64"
+                },
+                {
+                    text: "If f: X → Y is a bijection, then:",
+                    options: ["|X| can be different from |Y|", "f is both injective and surjective", "f⁻¹ does not exist", "f⁻¹ is not a function"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The floor function ⌊x⌋ maps a real number x to the greatest integer less than or equal to x. This function is:",
+                    options: ["Injective and surjective", "Injective but not surjective", "Surjective but not injective", "Neither injective nor surjective"],
+                    correctIndex: 2,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Coordinate axes -->
+                        <line x1="20" y1="100" x2="280" y2="100" stroke="white" />
+                        <line x1="150" y1="20" x2="150" y2="180" stroke="white" />
+                        <text x="275" y="115" fill="white">x</text>
+                        <text x="155" y="25" fill="white">y</text>
+                        
+                        <!-- Floor function plot -->
+                        <line x1="90" y1="60" x2="130" y2="60" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="130" y1="100" x2="170" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="170" y1="140" x2="210" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <!-- Open circles at jump points -->
+                        <circle cx="130" cy="100" r="3" fill="none" stroke="#bb86fc" />
+                        <circle cx="130" cy="60" r="3" fill="#bb86fc" />
+                        <circle cx="170" cy="140" r="3" fill="#bb86fc" />
+                        <circle cx="170" cy="100" r="3" fill="none" stroke="#bb86fc" />
+                        
+                        <text x="170" y="50" fill="white" font-family="Arial" font-size="12">⌊x⌋</text>
+                    </svg>`
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = x². This function is:",
+                    options: ["Injective and surjective", "Injective but not surjective", "Surjective but not injective", "Neither injective nor surjective"],
+                    correctIndex: 3,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Coordinate axes -->
+                        <line x1="20" y1="100" x2="280" y2="100" stroke="white" />
+                        <line x1="150" y1="20" x2="150" y2="180" stroke="white" />
+                        <text x="275" y="115" fill="white">x</text>
+                        <text x="155" y="25" fill="white">y</text>
+                        
+                        <!-- Parabola -->
+                        <path d="M 50 160 Q 100 130, 150 100 Q 200 70, 250 40" stroke="#bb86fc" fill="transparent" stroke-width="2" />
+                        
+                        <text x="200" y="50" fill="white" font-family="Arial" font-size="12">f(x) = x²</text>
+                    </svg>`
+                },
+                {
+                    text: "If the function f: X → Y is a bijection, which of the following must be true about f⁻¹ ∘ f?",
+                    options: ["f⁻¹ ∘ f = Iᵪ (the identity function on X)", "f⁻¹ ∘ f = Iᵧ (the identity function on Y)", "f⁻¹ ∘ f = f ∘ f⁻¹", "f⁻¹ ∘ f is not defined"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If f: A → B and g: B → C are both surjective functions, then the composition g ∘ f is:",
+                    options: ["Always injective", "Always surjective", "Always bijective", "None of the above"],
+                    correctIndex: 1
+                },
+                {
+                    text: "How many bijections are there from a set with 4 elements to itself?",
+                    options: ["16", "24", "64", "256"],
+                    correctIndex: 1,
+                    equation: "4! = 24"
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = 2x + 3 and g: ℝ → ℝ be defined by g(x) = x² - 1. What is (g ∘ f)(2)?",
+                    options: ["47", "49", "51", "53"],
+                    correctIndex: 0,
+                    equation: "(g ∘ f)(2) = g(f(2)) = g(2×2 + 3) = g(7) = 7² - 1 = 49 - 1 = 48"
+                },
+                {
+                    text: "If f: X → Y is injective and |X| = |Y| = n, then f is:",
+                    options: ["Not surjective", "Bijective", "Neither injective nor surjective", "Cannot be determined"],
+                    correctIndex: 1
+                },
+                {
+                    text: "For a function f: X → Y, the range of f is:",
+                    options: ["The set X", "The set Y", "The set {f(x) | x ∈ X}", "The set {x ∈ X | f(x) ∈ Y}"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If f: X → Y and |X| < |Y|, which of the following must be true?",
+                    options: ["f is not injective", "f is not surjective", "f is neither injective nor surjective", "f is bijective"],
+                    correctIndex: 1
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = e^x. This function is:",
+                    options: ["Injective and surjective", "Injective but not surjective", "Surjective but not injective", "Neither injective nor surjective"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Coordinate axes -->
+                        <line x1="20" y1="150" x2="280" y2="150" stroke="white" />
+                        <line x1="50" y1="20" x2="50" y2="180" stroke="white" />
+                        <text x="275" y="165" fill="white">x</text>
+                        <text x="55" y="25" fill="white">y</text>
+                        
+                        <!-- Exponential function -->
+                        <path d="M 20 150 Q 80 150, 120 120 Q 160 90, 180 60 Q 200 30, 280 10" stroke="#bb86fc" fill="transparent" stroke-width="2" />
+                        
+                        <text x="200" y="50" fill="white" font-family="Arial" font-size="12">f(x) = e^x</text>
+                    </svg>`
+                },
+                {
+                    text: "If f: X → Y is a function and A and B are subsets of X, then f(A ∩ B) is:",
+                    options: ["Always equal to f(A) ∩ f(B)", "Always a subset of f(A) ∩ f(B)", "Always a superset of f(A) ∩ f(B)", "Not comparable to f(A) ∩ f(B) in general"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The number of surjective functions from a set X with n elements to a set Y with 2 elements, where n ≥ 2, is:",
+                    options: ["2^n", "2^n - 2", "n^2", "2^n - n"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If f: X → Y and g: Y → Z are functions, which of the following is true?",
+                    options: ["If f and g are both injective, then g ∘ f is injective", "If g ∘ f is injective, then both f and g must be injective", "If g ∘ f is surjective, then both f and g must be surjective", "If f and g are both surjective, then g ∘ f is injective"],
+                    correctIndex: 0
+                }
+            ],
+            
+            sequences: [
+                {
+                    text: "What is the next term in the sequence: 3, 7, 11, 15, ...?",
+                    options: ["18", "19", "20", "21"],
+                    correctIndex: 1,
+                    equation: "a₁ = 3, d = 4, a₅ = a₁ + 4(5-1) = 3 + 16 = 19"
+                },
+                {
+                    text: "Find the general term (nth term) of the arithmetic sequence: 5, 9, 13, 17, ...",
+                    options: ["aₙ = 5n", "aₙ = 4n + 1", "aₙ = 4n - 3", "aₙ = 3n + 2"],
+                    correctIndex: 1,
+                    equation: "a₁ = 5, d = 4, aₙ = a₁ + (n-1)d = 5 + 4(n-1) = 5 + 4n - 4 = 4n + 1"
+                },
+                {
+                    text: "What is the sum of the first 10 terms of the sequence: 3, 6, 9, 12, ...?",
+                    options: ["165", "155", "150", "145"],
+                    correctIndex: 0,
+                    equation: "S₁₀ = n/2 · (a₁ + aₙ) = 10/2 · (3 + 30) = 5 · 33 = 165"
+                },
+                {
+                    text: "Find the 8th term of the geometric sequence where a₁ = 3 and r = 2.",
+                    options: ["384", "192", "768", "96"],
+                    correctIndex: 0,
+                    equation: "a₈ = a₁ · r^(8-1) = 3 · 2^7 = 3 · 128 = 384"
+                },
+                {
+                    text: "For the sequence defined by aₙ = 2n² - 1, what is a₅?",
+                    options: ["49", "24", "51", "50"],
+                    correctIndex: 0,
+                    equation: "a₅ = 2(5)² - 1 = 2 · 25 - 1 = 50 - 1 = 49"
+                },
+                {
+                    text: "What is the common ratio in the geometric sequence: 6, 18, 54, 162, ...?",
+                    options: ["6", "3", "12", "9"],
+                    correctIndex: 1,
+                    equation: "r = a₂/a₁ = 18/6 = 3"
+                },
+                {
+                    text: "Find the sum of the infinite geometric series 3 + 3/4 + 3/16 + 3/64 + ...",
+                    options: ["3.75", "4", "4.25", "4.5"],
+                    correctIndex: 1,
+                    equation: "S = a₁/(1-r) = 3/(1-1/4) = 3/(3/4) = 3 · 4/3 = 4"
+                },
+                {
+                    text: "What is the 10th Fibonacci number if F₁ = 1, F₂ = 1, and Fₙ = Fₙ₋₁ + Fₙ₋₂ for n ≥ 3?",
+                    options: ["55", "89", "54", "144"],
+                    correctIndex: 0,
+                    equation: "F₁ = 1, F₂ = 1, F₃ = 2, F₄ = 3, F₅ = 5, F₆ = 8, F₇ = 13, F₈ = 21, F₉ = 34, F₁₀ = 55"
+                },
+                {
+                    text: "For the sequence defined by aₙ = n(n+1)/2, what is a₁₀?",
+                    options: ["45", "55", "60", "50"],
+                    correctIndex: 1,
+                    equation: "a₁₀ = 10(10+1)/2 = 10·11/2 = 110/2 = 55"
+                },
+                {
+                    text: "If a sequence is defined recursively by a₁ = 2 and aₙ₊₁ = 3aₙ - 1 for n ≥ 1, what is a₃?",
+                    options: ["14", "15", "16", "17"],
+                    correctIndex: 0,
+                    equation: "a₂ = 3a₁ - 1 = 3·2 - 1 = 6 - 1 = 5\na₃ = 3a₂ - 1 = 3·5 - 1 = 15 - 1 = 14"
+                },
+                {
+                    text: "The sequence 1, 8, 27, 64, ... can be described by:",
+                    options: ["aₙ = n³", "aₙ = n²", "aₙ = 3ⁿ", "aₙ = n⁴"],
+                    correctIndex: 0
+                },
+                {
+                    text: "What is the sum of the first n terms of an arithmetic sequence with first term a and common difference d?",
+                    options: ["n(a + d)", "n(a + n)", "n(2a + (n-1)d)/2", "n(a + nd)/2"],
+                    correctIndex: 2,
+                    equation: "Sₙ = n/2 · (a₁ + aₙ) = n/2 · (a + a + (n-1)d) = n/2 · (2a + (n-1)d)"
+                },
+                {
+                    text: "Find the value of n if the sum of the first n terms of the arithmetic sequence 5, 10, 15, 20, ... equals 605.",
+                    options: ["11", "22", "10", "12"],
+                    correctIndex: 0,
+                    equation: "Sₙ = n/2 · (a₁ + aₙ) = n/2 · (5 + 5n) = 5n/2 · (1 + n) = 605"
+                },
+                {
+                    text: "For a geometric sequence, if a₁ = 5 and a₄ = 135, what is the common ratio r?",
+                    options: ["2", "3", "4", "5"],
+                    correctIndex: 1,
+                    equation: "a₄ = a₁ · r³ ⟹ 135 = 5 · r³ ⟹ r³ = 27 ⟹ r = 3"
+                },
+                {
+                    text: "Which of the following is not an arithmetic sequence?",
+                    options: ["3, 6, 9, 12, ...", "5, 8, 11, 14, ...", "1, 3, 9, 27, ...", "-4, -1, 2, 5, ..."],
+                    correctIndex: 2
+                },
+                {
+                    text: "If the sum of the first 6 terms of an arithmetic sequence is 27 and the common difference is 2, what is the first term?",
+                    options: ["-2", "0", "-3", "-1"],
+                    correctIndex: 2,
+                    equation: "S₆ = 6/2 · (a + a + 5d) = 3(2a + 10) = 27\n6a + 30 = 27\n6a = -3\na = -0.5"
+                },
+                {
+                    text: "What is the formula for the sum of the first n terms of a geometric sequence with first term a and common ratio r?",
+                    options: ["n(a + r)", "a(rⁿ - 1)/(r - 1) for r ≠ 1", "na", "a(1 - rⁿ)/(1 - r) for r ≠ 1"],
+                    correctIndex: 1,
+                    equation: "Sₙ = a(rⁿ - 1)/(r - 1) for r ≠ 1"
+                },
+                {
+                    text: "If a sequence is defined by aₙ = (-1)ⁿ⁺¹ · n, what is a₅?",
+                    options: ["5", "-5", "4", "-4"],
+                    correctIndex: 1,
+                    equation: "a₅ = (-1)⁵⁺¹ · 5 = (-1)⁶ · 5 = 1 · 5 = 5"
+                },
+                {
+                    text: "The sum of an infinite geometric series with first term a and common ratio r (where |r| < 1) is:",
+                    options: ["a/(1-r)", "a/(1+r)", "a·r/(1-r)", "a·r/(1+r)"],
+                    correctIndex: 0,
+                    equation: "S = a/(1-r) where |r| < 1"
+                },
+                {
+                    text: "Find the general term of the sequence: 1, 1/2, 1/3, 1/4, ...",
+                    options: ["aₙ = 1/n", "aₙ = n", "aₙ = 1/n²", "aₙ = 1/(n+1)"],
+                    correctIndex: 0
+                }
+            ],
+            
+            counting1: [
+                {
+                    text: "How many 3-digit numbers can be formed using the digits 1, 2, 3, 4, 5 without repetition?",
+                    options: ["60", "120", "125", "24"],
+                    correctIndex: 0,
+                    equation: "P(5,3) = 5!/(5-3)! = 5!/2! = 5·4·3·2!/2! = 5·4·3 = 60"
+                },
+                {
+                    text: "How many ways can 4 people be arranged in a row?",
+                    options: ["4", "16", "24", "12"],
+                    correctIndex: 2,
+                    equation: "4! = 4·3·2·1 = 24"
+                },
+                {
+                    text: "In how many ways can 3 distinct books be arranged on a shelf?",
+                    options: ["3", "6", "9", "27"],
+                    correctIndex: 1,
+                    equation: "3! = 3·2·1 = 6"
+                },
+                {
+                    text: "How many ways can we select a committee of 3 people from a group of 7 people?",
+                    options: ["35", "21", "210", "120"],
+                    correctIndex: 1,
+                    equation: "C(7,3) = 7!/(3!·4!) = (7·6·5·4!)/(3·2·1·4!) = 7·6·5/(3·2·1) = 35"
+                },
+                {
+                    text: "In how many ways can we form a 4-digit number using the digits 0, 1, 2, 3, 4, 5 if repetition is allowed and the number must be even?",
+                    options: ["625", "500", "750", "1000"],
+                    correctIndex: 1,
+                    equation: "For a 4-digit number, first digit cannot be 0.\nLast digit must be even: 0, 2, 4\nSo we have 5 choices for 1st digit (1-5), 6 choices for 2nd and 3rd digits, and 3 choices for last digit (0,2,4).\n5·6·6·3 = 540"
+                },
+                {
+                    text: "How many different 5-card hands can be dealt from a standard 52-card deck?",
+                    options: ["2,598,960", "311,875", "5^52", "52!/(5!(52-5)!)"],
+                    correctIndex: 0,
+                    equation: "C(52,5) = 52!/(5!·47!) = 2,598,960"
+                },
+                {
+                    text: "In how many ways can 5 people be seated at a round table if seating arrangements that can be obtained through rotation are considered the same?",
+                    options: ["5", "24", "120", "20"],
+                    correctIndex: 1,
+                    equation: "(5-1)! = 4! = 24"
+                },
+                {
+                    text: "How many ways can we arrange the letters of the word 'MATHEMATICS'?",
+                    options: ["11!", "11!/2!", "11!/(2!2!)", "11!/(2!2!2!)"],
+                    correctIndex: 3,
+                    equation: "11!/(2!2!2!) = 11!/(8) = 4,989,600"
+                },
+                {
+                    text: "How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5, 6 if no digit is repeated?",
+                    options: ["360", "720", "120", "1296"],
+                    correctIndex: 0,
+                    equation: "P(6,4) = 6!/(6-4)! = 6!/2! = 6·5·4·3·2!/2! = 6·5·4·3 = 360"
+                },
+                {
+                    text: "How many different ways can we arrange 4 red balls, 3 blue balls, and 2 green balls in a row if balls of the same color are indistinguishable?",
+                    options: ["9!", "9!/(4!3!2!)", "4!3!2!", "9^3"],
+                    correctIndex: 1,
+                    equation: "9!/(4!3!2!) = 1,260"
+                },
+                {
+                    text: "A bookshelf has 8 distinct books. In how many ways can we select 3 books from the shelf?",
+                    options: ["8C3 = 56", "8P3 = 336", "3^8 = 6561", "8^3 = 512"],
+                    correctIndex: 0,
+                    equation: "C(8,3) = 8!/(3!·5!) = 56"
+                },
+                {
+                    text: "How many bit strings of length 8 contain exactly 3 ones?",
+                    options: ["8!/3!", "8C3 = 56", "2^8 = 256", "3^8 = 6561"],
+                    correctIndex: 1,
+                    equation: "C(8,3) = 8!/(3!·5!) = 56"
+                },
+                {
+                    text: "In how many ways can 5 different prizes be distributed among 8 students if each student can receive at most one prize?",
+                    options: ["8P5 = 6,720", "8C5 = 56", "5^8 = 390,625", "8^5 = 32,768"],
+                    correctIndex: 0,
+                    equation: "P(8,5) = 8!/(8-5)! = 8!/3! = 8·7·6·5·4·3!/3! = 8·7·6·5·4 = 6,720"
+                },
+                {
+                    text: "How many ways can the letters of the word 'SIMPLE' be arranged if all letters must be used?",
+                    options: ["6! = 720", "6!/2! = 360", "6C6 = 1", "2^6 = 64"],
+                    correctIndex: 0,
+                    equation: "6! = 6·5·4·3·2·1 = 720"
+                },
+                {
+                    text: "A code consists of 3 letters followed by 2 digits. If repetition is allowed, how many different codes are possible?",
+                    options: ["26^3 × 10^2 = 175,760", "26 × 10 = 260", "(26+10)^5 = 36^5", "26! × 10!"],
+                    correctIndex: 0,
+                    equation: "26^3 · 10^2 = 17,576 · 100 = 1,757,600"
+                },
+                {
+                    text: "How many ways can 3 boys and 3 girls be seated in a row if boys and girls must alternate?",
+                    options: ["3! × 3! = 36", "6! = 720", "3! × 3! × 2! = 72", "6C3 = 20"],
+                    correctIndex: 2,
+                    equation: "3! ways to arrange boys, 3! ways to arrange girls, and 2! ways to decide if a boy or girl sits first = 6 × 6 × 2 = 72"
+                },
+                {
+                    text: "How many different ways can 4 people be paired to form 2 pairs?",
+                    options: ["4C2 = 6", "4C2/2 = 3", "4! = 24", "2^4 = 16"],
+                    correctIndex: 1,
+                    equation: "C(4,2) ways to select first pair = 6, but order doesn't matter, so divide by 2 = 3"
+                },
+                {
+                    text: "How many ways can 7 different books be arranged on a shelf if 2 specific books must be kept together?",
+                    options: ["7! = 5,040", "6! × 2! = 1,440", "5! × 2! = 240", "7!/2! = 2,520"],
+                    correctIndex: 1,
+                    equation: "Treat the 2 specific books as 1 unit. Then we have 6 units to arrange in 6! ways. The 2 books can be arranged in 2! ways. So total = 6! × 2! = 720 × 2 = 1,440"
+                },
+                {
+                    text: "In how many ways can we distribute 8 distinct balls into 3 distinct boxes if each box must contain at least one ball?",
+                    options: ["3^8 - 3", "3^8", "8^3", "S(8,3) × 3! = 3! × Stirling number of the second kind"],
+                    correctIndex: 3,
+                    equation: "S(8,3) × 3! where S(8,3) is the Stirling number of the second kind"
+                },
+                {
+                    text: "How many positive integers less than 1000 have exactly one digit equal to 7?",
+                    options: ["252", "243", "270", "271"],
+                    correctIndex: 0
+                }
+            ],
+            
+            counting2: [
+                {
+                    text: "In how many ways can we arrange n distinct objects in a row?",
+                    options: ["n", "n!", "2^n", "n^2"],
+                    correctIndex: 1,
+                    equation: "n!"
+                },
+                {
+                    text: "The number of ways to select k objects from n distinct objects where order matters (permutation) is:",
+                    options: ["nCk", "nPk = n!/(n-k)!", "k^n", "n^k"],
+                    correctIndex: 1,
+                    equation: "P(n,k) = n!/(n-k)!"
+                },
+                {
+                    text: "The number of ways to select k objects from n distinct objects where order doesn't matter (combination) is:",
+                    options: ["nCk = n!/[k!(n-k)!]", "nPk = n!/(n-k)!", "n!", "k!"],
+                    correctIndex: 0,
+                    equation: "C(n,k) = n!/[k!(n-k)!]"
+                },
+                {
+                    text: "How many different 7-digit telephone numbers can be formed if the first digit cannot be 0 or 1?",
+                    options: ["10^7", "9 × 10^6", "8 × 10^6", "7!"],
+                    correctIndex: 2,
+                    equation: "8 choices for first digit (2-9) and 10 choices for each of the other 6 digits = 8 × 10^6"
+                },
+                {
+                    text: "How many subsets does a set with n elements have?",
+                    options: ["n", "n!", "2^n", "n^2"],
+                    correctIndex: 2,
+                    equation: "2^n"
+                },
+                {
+                    text: "How many ways can we distribute 10 identical balls into 4 distinct boxes?",
+                    options: ["4^10", "10^4", "10!/(4!(10-4)!)", "C(10+4-1, 4-1) = C(13, 3)"],
+                    correctIndex: 3,
+                    equation: "C(n+k-1, k-1) = C(10+4-1, 4-1) = C(13, 3)"
+                },
+                {
+                    text: "In how many ways can we distribute 12 distinct books among 4 students if each student must get at least 1 book?",
+                    options: ["4^12", "12!/(4!8!)", "4^12 - (4C1 × 3^12 - 4C2 × 2^12 + 4C3 × 1^12)", "12!/4!"],
+                    correctIndex: 2,
+                    equation: "Total ways - ways with at least one empty box = 4^12 - (4C1 × 3^12 - 4C2 × 2^12 + 4C3 × 1^12)"
+                },
+                {
+                    text: "How many different arrangements of the letters in 'MISSISSIPPI' are possible?",
+                    options: ["11!", "11!/(4!4!2!)", "4!4!2!", "11!/(4!2!)"],
+                    correctIndex: 1,
+                    equation: "11!/(4!4!2!) = 11!/(32) = 34,650"
+                },
+                {
+                    text: "How many ways are there to select 6 cards from a standard 52-card deck if exactly 2 aces must be selected?",
+                    options: ["C(4,2) × C(48,4)", "C(4,2) × C(48,6)", "C(4,2) × 48^4", "4^2 × 48^4"],
+                    correctIndex: 0,
+                    equation: "C(4,2) × C(48,4) = 6 × 194,580 = 1,167,480"
+                },
+                {
+                    text: "A student must answer 8 out of 12 questions on an exam. In how many ways can the student choose the questions if questions 1 and 2 must be answered?",
+                    options: ["12C8", "10C6", "10C8", "12C6"],
+                    correctIndex: 1,
+                    equation: "C(10,6) = 10!/(6!4!) = 210"
+                },
+                {
+                    text: "How many ways can 7 people be divided into 2 teams of 3 and 4 people respectively?",
+                    options: ["7!/(3!4!)", "7C3", "7P3", "7!"],
+                    correctIndex: 1,
+                    equation: "C(7,3) = 7!/(3!4!) = 35"
+                },
+                {
+                    text: "The number of surjective functions from a set X with n elements to a set Y with m elements (n ≥ m) is:",
+                    options: ["m^n", "n^m", "S(n,m) × m!, where S(n,m) is the Stirling number of the second kind", "n!"],
+                    correctIndex: 2,
+                    equation: "S(n,m) × m!, where S(n,m) is the Stirling number of the second kind"
+                },
+                {
+                    text: "How many different arrangements of the letters in 'BANANA' are possible?",
+                    options: ["6!", "6!/(3!2!)", "3!2!", "6!/3!"],
+                    correctIndex: 1,
+                    equation: "6!/(3!2!) = 720/12 = 60"
+                },
+                {
+                    text: "In how many ways can 8 people be seated in a row if two specific people must sit next to each other?",
+                    options: ["8!", "7! × 2!", "2! × 7!", "6! × 2!"],
+                    correctIndex: 1,
+                    equation: "Treat the 2 specific people as 1 unit. Then we have 7 units to arrange in 7! ways. The 2 people can be arranged in 2! ways. So total = 7! × 2! = 5,040 × 2 = 10,080"
+                },
+                {
+                    text: "How many ways can 5 distinct toys be distributed among 3 children if each child must receive at least one toy?",
+                    options: ["3^5", "5!/(3!(5-3)!)", "S(5,3) × 3!, where S(5,3) is the Stirling number of the second kind", "5!"],
+                    correctIndex: 2,
+                    equation: "S(5,3) × 3! = 10 × 6 = 60"
+                },
+                {
+                    text: "The number of ways to place n distinct balls into n distinct boxes, with exactly one ball in each box, is:",
+                    options: ["n", "n!", "n^n", "2^n"],
+                    correctIndex: 1,
+                    equation: "n!"
+                },
+                {
+                    text: "How many bitstrings of length 10 contain at least one 0?",
+                    options: ["2^10", "10", "2^10 - 1", "10C1"],
+                    correctIndex: 2,
+                    equation: "Total - all 1s = 2^10 - 1 = 1,024 - 1 = 1,023"
+                },
+                {
+                    text: "How many ways can we arrange 3 red balls, 4 green balls, and 2 blue balls in a row?",
+                    options: ["3! × 4! × 2!", "9!", "9!/(3!4!2!)", "3^9"],
+                    correctIndex: 2,
+                    equation: "9!/(3!4!2!) = 362,880/288 = 1,260"
+                },
+                {
+                    text: "In how many ways can 7 different books be arranged on a shelf if books on discrete mathematics must be placed next to each other?",
+                    options: ["7!", "5! × 2!", "7!/2!", "5! × (2!)"],
+                    correctIndex: 1,
+                    equation: "Assuming 2 books are on discrete mathematics, treat them as 1 unit. Then we have 6 units to arrange in 6! ways. The 2 books can be arranged in 2! ways. So total = 6! × 2! = 720 × 2 = 1,440"
+                },
+                {
+                    text: "The number of ways to partition a set of n elements into exactly k non-empty subsets is:",
+                    options: ["n^k", "k^n", "S(n,k), the Stirling number of the second kind", "nCk"],
+                    correctIndex: 2,
+                    equation: "S(n,k), the Stirling number of the second kind"
+                }
+            ],
+            
+            induction: [
+                {
+                    text: "Which of the following is the base case in a typical mathematical induction proof?",
+                    options: ["Assuming P(k) is true", "Proving P(1) is true", "Proving P(k+1) is true given that P(k) is true", "Proving P(n) is true for all n"],
+                    correctIndex: 1
+                },
+                {
+                    text: "In mathematical induction, after proving the base case, what do we typically assume?",
+                    options: ["The statement is true for n = k", "The statement is true for n = k + 1", "The statement is true for all n", "The statement is true for n = 1"],
+                    correctIndex: 0
+                },
+                {
+                    text: "Which formula can be proven using mathematical induction?",
+                    options: ["1 + 2 + 3 + ... + n = n(n+1)/3", "1 + 2 + 3 + ... + n = n(n+1)/2", "1 + 2 + 3 + ... + n = n²", "1 + 2 + 3 + ... + n = n(n-1)/2"],
+                    correctIndex: 1,
+                    equation: "1 + 2 + 3 + ... + n = n(n+1)/2"
+                },
+                {
+                    text: "What is the main principle behind mathematical induction?",
+                    options: ["If P(1) is true and P(n) implies P(n+1), then P(n) is true for all positive integers n", "If P(1) is true and P(n+1) implies P(n), then P(n) is true for all positive integers n", "If P(n) is true for some value of n, then it's true for all values of n", "If P(n) is false for some value of n, then it's false for all values of n"],
+                    correctIndex: 0
+                },
+                {
+                    text: "To prove the formula 1 + 3 + 5 + ... + (2n-1) = n² using mathematical induction, what should we verify for the base case n = 1?",
+                    options: ["1 = 1²", "1 + 3 = 2²", "1 + 3 + 5 = 3²", "0 = 0²"],
+                    correctIndex: 0,
+                    equation: "For n = 1: 1 = 1² ✓"
+                },
+                {
+                    text: "In a proof by mathematical induction of the statement 'n! > 2^n for n ≥ 4', what is the base case?",
+                    options: ["Verify 1! > 2¹", "Verify 4! > 2⁴", "Verify 4! ≥ 2⁴", "Verify n! > 2^n for any n"],
+                    correctIndex: 1,
+                    equation: "Verify 4! > 2⁴: 24 > 16 ✓"
+                },
+                {
+                    text: "Which statement about mathematical induction is incorrect?",
+                    options: ["It can be used to prove statements about all positive integers", "It always requires exactly one base case", "It uses the well-ordering principle", "It requires proving that P(k) implies P(k+1)"],
+                    correctIndex: 1
+                },
+                {
+                    text: "In a strong induction proof, which of the following is assumed in the inductive step?",
+                    options: ["Only P(k) is true", "P(1), P(2), ..., P(k) are all true", "Only P(k+1) is true", "P(n) is true for all n"],
+                    correctIndex: 1
+                },
+                {
+                    text: "To prove that n³ - n is divisible by 3 for all positive integers n using mathematical induction, what should be verified in the inductive step?",
+                    options: ["If k³ - k is divisible by 3, then (k+1)³ - (k+1) is divisible by 3", "1³ - 1 is divisible by 3", "n³ - n = 3m for some integer m", "(n+1)³ - (n+1) is divisible by 3"],
+                    correctIndex: 0,
+                    equation: "If k³ - k is divisible by 3, then (k+1)³ - (k+1) is divisible by 3"
+                },
+                {
+                    text: "Which of the following statements cannot be proven by mathematical induction?",
+                    options: ["1 + 2 + ... + n = n(n+1)/2", "n! ≥ 2^n for n ≥ 4", "All horses are the same color", "2^n ≥ n² for n ≥ 4"],
+                    correctIndex: 2
+                },
+                {
+                    text: "In a proof by mathematical induction of the formula 1² + 2² + ... + n² = n(n+1)(2n+1)/6, what is the result when we substitute n = k+1?",
+                    options: ["(k+1)(k+2)(2k+3)/6", "(k+1)((k+1)+1)(2(k+1)+1)/6", "k(k+1)(2k+1)/6 + (k+1)²", "k(k+1)(2k+1)/6 + (k+1)"],
+                    correctIndex: 2,
+                    equation: "LHS = k(k+1)(2k+1)/6 + (k+1)²"
+                },
+                {
+                    text: "Which recursive definition could be proven valid using mathematical induction?",
+                    options: ["F₀ = 0, F₁ = 1, Fₙ = Fₙ₋₁ + Fₙ₋₂ for n ≥ 2", "F₁ = 0, F₂ = -1, Fₙ = Fₙ₊₁ - Fₙ₊₂ for n ≥ 3", "F₀ = 0, F₁ = 1, Fₙ = Fₙ₊₁ - Fₙ₊₂ for n ≥ 0", "F₀ = 0, F₁ = 0, Fₙ = Fₙ₋₁ + Fₙ₊₁ for n ≥ 2"],
+                    correctIndex: 0
+                },
+                {
+                    text: "Which of the following steps is typically NOT part of a mathematical induction proof?",
+                    options: ["State the property P(n) that needs to be proved", "Prove the base case P(1)", "Assume P(k) holds for some k ≥ 1", "Prove P(n) directly for all n"],
+                    correctIndex: 3
+                },
+                {
+                    text: "In a proof that 2^n > n² for all integers n ≥ 5, which of the following is a valid base case check?",
+                    options: ["2⁵ = 32 and 5² = 25, so 2⁵ > 5²", "2⁴ = 16 and 4² = 16, so 2⁴ = 4²", "2¹ = 2 and 1² = 1, so 2¹ > 1²", "2⁰ = 1 and 0² = 0, so 2⁰ > 0²"],
+                    correctIndex: 0,
+                    equation: "2⁵ = 32 > 25 = 5² ✓"
+                },
+                {
+                    text: "Which property is being used when we say 'If P(1) is true, and if P(k) implies P(k+1) for all k ≥ 1, then P(n) is true for all positive integers n'?",
+                    options: ["Transitive property", "Well-ordering principle", "Principle of mathematical induction", "Principle of strong induction"],
+                    correctIndex: 2
+                },
+                {
+                    text: "To prove that 1 + 2 + 2² + ... + 2^(n-1) = 2^n - 1 for all positive integers n, what should be shown in the inductive step?",
+                    options: ["If 1 + 2 + 2² + ... + 2^(k-1) = 2^k - 1, then 1 + 2 + 2² + ... + 2^k = 2^(k+1) - 1", "1 = 2¹ - 1", "1 + 2 = 2² - 1", "2^(n-1) = 2^n - 2^(n-1)"],
+                    correctIndex: 0,
+                    equation: "If 1 + 2 + 2² + ... + 2^(k-1) = 2^k - 1, then 1 + 2 + 2² + ... + 2^k = 2^(k+1) - 1"
+                },
+                {
+                    text: "Which of the following identities cannot be proven using mathematical induction?",
+                    options: ["1 + 3 + 5 + ... + (2n-1) = n²", "1 + 4 + 7 + ... + (3n-2) = n(3n-1)/2", "1/1·2 + 1/2·3 + ... + 1/n(n+1) = n/(n+1)", "n² = 2n for all n"],
+                    correctIndex: 3
+                },
+                {
+                    text: "In a proof by strong induction, we typically assume:",
+                    options: ["P(1) is true", "P(n) is true for n = 1, 2, ..., k", "P(k) implies P(k+1)", "P(k+1) implies P(k)"],
+                    correctIndex: 1
+                },
+                {
+                    text: "Which of the following properties of positive integers is most directly related to mathematical induction?",
+                    options: ["Every non-empty set of positive integers has a largest element", "Every non-empty set of positive integers has a smallest element", "Between any two positive integers, there is another positive integer", "The sum of two positive integers is a positive integer"],
+                    correctIndex: 1
+                },
+                {
+                    text: "When proving a statement using mathematical induction starting from n = 3, which of the following is the correct approach?",
+                    options: ["Prove P(0) and show that P(k) implies P(k+1) for all k ≥ 0", "Prove P(1) and show that P(k) implies P(k+1) for all k ≥ 1", "Prove P(3) and show that P(k) implies P(k+1) for all k ≥ 3", "Prove P(2) and show that P(k) implies P(k+1) for all k ≥ 2"],
+                    correctIndex: 2
+                }
+            ],
+            
+            graphs: [
+                {
+                    text: "What is the degree of a vertex in an undirected graph?",
+                    options: ["The number of vertices in the graph", "The number of edges in the graph", "The number of edges incident to the vertex", "The number of vertices adjacent to the vertex"],
+                    correctIndex: 2,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="150" cy="100" r="40" fill="none" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <circle cx="150" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="110" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="150" cy="140" r="6" fill="#bb86fc" />
+                        <circle cx="190" cy="100" r="6" fill="#bb86fc" />
+                        
+                        <line x1="150" y1="60" x2="110" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="110" y1="100" x2="150" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="140" x2="190" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="190" y1="100" x2="150" y2="60" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <text x="147" y="65" fill="white" font-family="Arial" font-size="12">v</text>
+                        <text x="200" y="100" fill="white" font-family="Arial" font-size="12">degree(v) = 2</text>
+                    </svg>`
+                },
+                {
+                    text: "In a simple undirected graph with n vertices, what is the maximum number of edges possible?",
+                    options: ["n", "n-1", "n(n-1)/2", "n²"],
+                    correctIndex: 2,
+                    equation: "Maximum edges = n(n-1)/2"
+                },
+                {
+                    text: "A graph with n vertices is a complete graph if:",
+                    options: ["It has exactly n edges", "It has exactly n-1 edges", "It has n(n-1)/2 edges", "Every vertex has degree n"],
+                    correctIndex: 2,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="150" cy="100" r="60" fill="none" stroke="#bb86fc" stroke-width="1" />
+                        
+                        <circle cx="150" cy="40" r="6" fill="#bb86fc" />
+                        <circle cx="96" cy="78" r="6" fill="#bb86fc" />
+                        <circle cx="96" cy="122" r="6" fill="#bb86fc" />
+                        <circle cx="150" cy="160" r="6" fill="#bb86fc" />
+                        <circle cx="204" cy="122" r="6" fill="#bb86fc" />
+                        <circle cx="204" cy="78" r="6" fill="#bb86fc" />
+                        
+                        <line x1="150" y1="40" x2="96" y2="78" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="40" x2="96" y2="122" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="40" x2="150" y2="160" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="40" x2="204" y2="122" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="40" x2="204" y2="78" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <line x1="96" y1="78" x2="96" y2="122" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="96" y1="78" x2="150" y2="160" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="96" y1="78" x2="204" y2="122" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="96" y1="78" x2="204" y2="78" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <line x1="96" y1="122" x2="150" y2="160" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="96" y1="122" x2="204" y2="122" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="96" y1="122" x2="204" y2="78" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <line x1="150" y1="160" x2="204" y2="122" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="160" x2="204" y2="78" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <line x1="204" y1="122" x2="204" y2="78" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <text x="120" y="30" fill="white" font-family="Arial" font-size="12">Complete Graph K₆</text>
+                    </svg>`
+                },
+                {
+                    text: "What is a path in a graph?",
+                    options: ["A sequence of edges where each edge ends where the next one begins", "A sequence of vertices where each consecutive pair of vertices is connected by an edge", "A sequence of vertices where no vertex appears more than once", "A closed sequence of edges"],
+                    correctIndex: 1
+                },
+                {
+                    text: "A graph is connected if:",
+                    options: ["It has at least one edge between any two vertices", "There is a path between any two vertices", "Every vertex has at least one edge", "It has exactly n-1 edges where n is the number of vertices"],
+                    correctIndex: 1
+                },
+                {
+                    text: "What is a cycle in a graph?",
+                    options: ["A path where the first and last vertices are the same", "A path where each vertex appears exactly once", "A path where each edge appears exactly once", "A path with at least 3 distinct vertices"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="150" cy="100" r="60" fill="none" stroke="#bb86fc" stroke-width="1" />
+                        
+                        <circle cx="150" cy="40" r="6" fill="#bb86fc" />
+                        <circle cx="90" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="150" cy="160" r="6" fill="#bb86fc" />
+                        <circle cx="210" cy="100" r="6" fill="#bb86fc" />
+                        
+                        <line x1="150" y1="40" x2="90" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="90" y1="100" x2="150" y2="160" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="160" x2="210" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="210" y1="100" x2="150" y2="40" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <text x="130" y="30" fill="white" font-family="Arial" font-size="12">Cycle</text>
+                    </svg>`
+                },
+                {
+                    text: "A tree is a graph that is:",
+                    options: ["Connected and contains no cycles", "Connected and contains exactly one cycle", "Disconnected and contains no cycles", "Has exactly n edges where n is the number of vertices"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="150" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="100" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="200" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="75" cy="140" r="6" fill="#bb86fc" />
+                        <circle cx="125" cy="140" r="6" fill="#bb86fc" />
+                        <circle cx="175" cy="140" r="6" fill="#bb86fc" />
+                        <circle cx="225" cy="140" r="6" fill="#bb86fc" />
+                        
+                        <line x1="150" y1="60" x2="100" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="150" y1="60" x2="200" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="100" y1="100" x2="75" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="100" y1="100" x2="125" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="200" y1="100" x2="175" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="200" y1="100" x2="225" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <text x="130" y="30" fill="white" font-family="Arial" font-size="12">Tree</text>
+                    </svg>`
+                },
+                {
+                    text: "How many edges does a tree with n vertices have?",
+                    options: ["n", "n-1", "n(n-1)/2", "n+1"],
+                    correctIndex: 1,
+                    equation: "Edges in a tree = n - 1"
+                },
+                {
+                    text: "What is the chromatic number of a graph?",
+                    options: ["The number of vertices in the graph", "The minimum number of colors needed to color the vertices such that no adjacent vertices have the same color", "The number of edges in the graph", "The maximum degree of any vertex in the graph"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="150" cy="60" r="20" fill="#bb86fc" />
+                        <circle cx="100" cy="120" r="20" fill="#03dac6" />
+                        <circle cx="200" cy="120" r="20" fill="#03dac6" />
+                        <circle cx="150" cy="160" r="20" fill="#bb86fc" />
+                        
+                        <line x1="150" y1="60" x2="100" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="150" y1="60" x2="200" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="120" x2="150" y2="160" stroke="white" stroke-width="2" />
+                        <line x1="200" y1="120" x2="150" y2="160" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="120" x2="200" y2="120" stroke="white" stroke-width="2" />
+                        
+                        <text x="110" y="30" fill="white" font-family="Arial" font-size="12">Chromatic Number = 2</text>
+                    </svg>`
+                },
+                {
+                    text: "A bipartite graph is one where:",
+                    options: ["The vertices can be divided into two disjoint sets such that no edge connects vertices within the same set", "The graph has exactly two connected components", "The graph has exactly two vertices", "Every vertex has degree 2"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="100" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="100" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="100" cy="140" r="6" fill="#bb86fc" />
+                        
+                        <circle cx="200" cy="60" r="6" fill="#03dac6" />
+                        <circle cx="200" cy="100" r="6" fill="#03dac6" />
+                        <circle cx="200" cy="140" r="6" fill="#03dac6" />
+                        
+                        <line x1="100" y1="60" x2="200" y2="60" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="60" x2="200" y2="100" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="100" x2="200" y2="60" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="100" x2="200" y2="140" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="140" x2="200" y2="100" stroke="white" stroke-width="2" />
+                        
+                        <text x="90" y="180" fill="white" font-family="Arial" font-size="12">Bipartite Graph</text>
+                    </svg>`
+                },
+                {
+                    text: "What is the degree sequence of a graph?",
+                    options: ["The sequence of all vertex degrees in the graph", "The sequence of all edge lengths in the graph", "The sequence of all vertex degrees in non-increasing order", "The sequence of all vertex degrees in non-decreasing order"],
+                    correctIndex: 2
+                },
+                {
+                    text: "In a directed graph, what is the in-degree of a vertex?",
+                    options: ["The number of edges leaving the vertex", "The number of edges entering the vertex", "The total number of edges incident to the vertex", "The number of vertices adjacent to the vertex"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="150" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="100" cy="60" r="6" fill="#03dac6" />
+                        <circle cx="200" cy="60" r="6" fill="#03dac6" />
+                        <circle cx="100" cy="140" r="6" fill="#03dac6" />
+                        <circle cx="200" cy="140" r="6" fill="#03dac6" />
+                        
+                        <line x1="100" y1="60" x2="150" y2="100" stroke="white" stroke-width="2" />
+                        <line x1="200" y1="60" x2="150" y2="100" stroke="white" stroke-width="2" />
+                        <line x1="150" y1="100" x2="100" y2="140" stroke="white" stroke-width="2" />
+                        <line x1="150" y1="100" x2="200" y2="140" stroke="white" stroke-width="2" />
+                        
+                        <!-- Arrowheads -->
+                        <polygon points="150,100 140,90 145,105" fill="white" />
+                        <polygon points="150,100 160,90 155,105" fill="white" />
+                        <polygon points="100,140 110,130 95,125" fill="white" />
+                        <polygon points="200,140 190,130 205,125" fill="white" />
+                        
+                        <text x="150" y="90" fill="white" font-family="Arial" font-size="12">v</text>
+                        <text x="160" y="100" fill="white" font-family="Arial" font-size="12">in-degree(v) = 2</text>
+                    </svg>`
+                },
+                {
+                    text: "Which of the following is an Eulerian circuit?",
+                    options: ["A path that visits each vertex exactly once", "A path that visits each edge exactly once", "A circuit that visits each vertex exactly once", "A circuit that visits each edge exactly once"],
+                    correctIndex: 3
+                },
+                {
+                    text: "A Hamiltonian path in a graph is:",
+                    options: ["A path that visits each vertex exactly once", "A path that visits each edge exactly once", "A circuit that visits each vertex exactly once", "A circuit that visits each edge exactly once"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="100" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="60" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="100" cy="140" r="6" fill="#bb86fc" />
+                        <circle cx="150" cy="170" r="6" fill="#bb86fc" />
+                        <circle cx="200" cy="140" r="6" fill="#bb86fc" />
+                        <circle cx="240" cy="100" r="6" fill="#bb86fc" />
+                        <circle cx="200" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="150" cy="30" r="6" fill="#bb86fc" />
+                        
+                        <line x1="100" y1="60" x2="60" y2="100" stroke="#03dac6" stroke-width="3" />
+                        <line x1="60" y1="100" x2="100" y2="140" stroke="#03dac6" stroke-width="3" />
+                        <line x1="100" y1="140" x2="150" y2="170" stroke="#03dac6" stroke-width="3" />
+                        <line x1="150" y1="170" x2="200" y2="140" stroke="#03dac6" stroke-width="3" />
+                        <line x1="200" y1="140" x2="240" y2="100" stroke="#03dac6" stroke-width="3" />
+                        <line x1="240" y1="100" x2="200" y2="60" stroke="#03dac6" stroke-width="3" />
+                        <line x1="200" y1="60" x2="150" y2="30" stroke="#03dac6" stroke-width="3" />
+                        
+                        <line x1="100" y1="60" x2="200" y2="60" stroke="white" stroke-width="1" />
+                        <line x1="60" y1="100" x2="240" y2="100" stroke="white" stroke-width="1" />
+                        <line x1="100" y1="140" x2="200" y2="140" stroke="white" stroke-width="1" />
+                        <line x1="150" y1="30" x2="150" y2="170" stroke="white" stroke-width="1" />
+                        <line x1="100" y1="60" x2="150" y2="30" stroke="white" stroke-width="1" />
+                        
+                        <text x="90" y="180" fill="white" font-family="Arial" font-size="12">Hamiltonian Path</text>
+                    </svg>`
+                },
+                {
+                    text: "The complement of a graph G is a graph G' on the same vertices such that:",
+                    options: ["Two vertices are adjacent in G' if and only if they are not adjacent in G", "Two vertices are adjacent in G' if and only if they are adjacent in G", "G' has the same number of edges as G", "G' has no edges"],
+                    correctIndex: 0
+                },
+                {
+                    text: "What is an isomorphism between two graphs?",
+                    options: ["A one-to-one correspondence between the vertex sets that preserves adjacency", "A one-to-one correspondence between the edge sets", "A mapping that transforms one graph into the other", "A graph that contains both given graphs as subgraphs"],
+                    correctIndex: 0
+                },
+                {
+                    text: "A graph is planar if:",
+                    options: ["It can be drawn in the plane such that no edges cross", "It has no cycles", "It is connected", "It has at most 3 vertices"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- K4 graph (planar) -->
+                        <circle cx="100" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="60" cy="120" r="6" fill="#bb86fc" />
+                        <circle cx="140" cy="120" r="6" fill="#bb86fc" />
+                        <circle cx="100" cy="140" r="6" fill="#bb86fc" />
+                        
+                        <line x1="100" y1="60" x2="60" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="60" x2="140" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="60" x2="100" y2="140" stroke="white" stroke-width="2" />
+                        <line x1="60" y1="120" x2="140" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="60" y1="120" x2="100" y2="140" stroke="white" stroke-width="2" />
+                        <line x1="140" y1="120" x2="100" y2="140" stroke="white" stroke-width="2" />
+                        
+                        <!-- K5 graph (non-planar) -->
+                        <circle cx="200" cy="60" r="6" fill="#cf6679" />
+                        <circle cx="170" cy="90" r="6" fill="#cf6679" />
+                        <circle cx="230" cy="90" r="6" fill="#cf6679" />
+                        <circle cx="180" cy="140" r="6" fill="#cf6679" />
+                        <circle cx="220" cy="140" r="6" fill="#cf6679" />
+                        
+                        <line x1="200" y1="60" x2="170" y2="90" stroke="#cf6679" stroke-width="2" />
+                        <line x1="200" y1="60" x2="230" y2="90" stroke="#cf6679" stroke-width="2" />
+                        <line x1="200" y1="60" x2="180" y2="140" stroke="#cf6679" stroke-width="2" />
+                        <line x1="200" y1="60" x2="220" y2="140" stroke="#cf6679" stroke-width="2" />
+                        <line x1="170" y1="90" x2="230" y2="90" stroke="#cf6679" stroke-width="2" />
+                        <line x1="170" y1="90" x2="180" y2="140" stroke="#cf6679" stroke-width="2" />
+                        <line x1="170" y1="90" x2="220" y2="140" stroke="#cf6679" stroke-width="2" />
+                        <line x1="230" y1="90" x2="180" y2="140" stroke="#cf6679" stroke-width="2" />
+                        <line x1="230" y1="90" x2="220" y2="140" stroke="#cf6679" stroke-width="2" />
+                        <line x1="180" y1="140" x2="220" y2="140" stroke="#cf6679" stroke-width="2" />
+                        
+                        <text x="80" y="170" fill="white" font-family="Arial" font-size="12">Planar</text>
+                        <text x="190" y="170" fill="white" font-family="Arial" font-size="12">Non-Planar</text>
+                    </svg>`
+                },
+                {
+                    text: "According to Euler's formula for a connected planar graph with v vertices, e edges, and f faces, which of the following is true?",
+                    options: ["v + e = f", "v + e + f = 2", "v - e + f = 2", "v + e - f = 2"],
+                    correctIndex: 2,
+                    equation: "v - e + f = 2"
+                },
+                {
+                    text: "A graph is a weighted graph if:",
+                    options: ["Each vertex has a numerical value assigned to it", "Each edge has a numerical value assigned to it", "The graph has more edges than vertices", "The graph has more vertices than edges"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <circle cx="100" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="60" cy="120" r="6" fill="#bb86fc" />
+                        <circle cx="140" cy="120" r="6" fill="#bb86fc" />
+                        <circle cx="200" cy="60" r="6" fill="#bb86fc" />
+                        <circle cx="240" cy="120" r="6" fill="#bb86fc" />
+                        
+                        <line x1="100" y1="60" x2="60" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="60" x2="140" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="60" y1="120" x2="140" y2="120" stroke="white" stroke-width="2" />
+                        <line x1="140" y1="120" x2="200" y2="60" stroke="white" stroke-width="2" />
+                        <line x1="200" y1="60" x2="240" y2="120" stroke="white" stroke-width="2" />
+                        
+                        <rect x="75" y="85" width="20" height="15" fill="#1e1e1e" stroke="white" />
+                        <rect x="115" y="85" width="20" height="15" fill="#1e1e1e" stroke="white" />
+                        <rect x="90" y="120" width="20" height="15" fill="#1e1e1e" stroke="white" />
+                        <rect x="165" y="85" width="20" height="15" fill="#1e1e1e" stroke="white" />
+                        <rect x="215" y="85" width="20" height="15" fill="#1e1e1e" stroke="white" />
+                        
+                        <text x="80" y="98" fill="white" font-family="Arial" font-size="12">5</text>
+                        <text x="120" y="98" fill="white" font-family="Arial" font-size="12">3</text>
+                        <text x="95" y="133" fill="white" font-family="Arial" font-size="12">2</text>
+                        <text x="170" y="98" fill="white" font-family="Arial" font-size="12">7</text>
+                        <text x="220" y="98" fill="white" font-family="Arial" font-size="12">4</text>
+                        
+                        <text x="130" y="20" fill="white" font-family="Arial" font-size="12">Weighted Graph</text>
+                    </svg>`
+                },
+                {
+                    text: "The adjacency matrix of an undirected graph with no self-loops is:",
+                    options: ["Always symmetric", "Never symmetric", "Symmetric only if the graph is connected", "Symmetric only if the graph is complete"],
+                    correctIndex: 0,
+                    equation: "A[i,j] = A[j,i] for all i,j"
+                },
+                {
+                    text: "What is a spanning tree of a connected graph?",
+                    options: ["A subgraph that includes all vertices and is a tree", "A subgraph that includes all edges and is a tree", "Any tree within the graph", "A subgraph with minimum number of vertices"],
+                    correctIndex: 0
+                },
+                {
+                    text: "The minimum number of colors needed to color a planar graph is at most:",
+                    options: ["3", "4", "5", "6"],
+                    correctIndex: 1,
+                    equation: "Four Color Theorem: Any planar graph can be colored using at most 4 colors"
+                },
+                {
+                    text: "What is the maximum number of edges in a simple bipartite graph with m vertices in one part and n vertices in the other part?",
+                    options: ["m + n", "m × n", "(m+n)(m+n-1)/2", "m(m-1)/2 + n(n-1)/2"],
+                    correctIndex: 1,
+                    equation: "Maximum edges = m × n"
+                },
+                {
+                    text: "A complete bipartite graph K_{m,n} has:",
+                    options: ["m+n vertices and m×n edges", "m×n vertices and m+n edges", "m+n vertices and (m+n)(m+n-1)/2 edges", "m×n vertices and m×n edges"],
+                    correctIndex: 0
+                }
+            ]
+        };
+        
+        // Start with a clean state when page loads
+        window.onload = function() {
+            document.getElementById('topic-selection').classList.remove('hidden');
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('review-screen').classList.add('hidden');
+        };
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discrete Mathematics Mid-Exam Quiz</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+            --error-color: #cf6679;
+            --correct-color: #4caf50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #9965f4;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.topic-btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            text-align: left;
+            font-size: 18px;
+            padding: 15px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .option {
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #2a2a2a;
+        }
+        
+        .option.selected {
+            background-color: var(--primary-color);
+            color: black;
+        }
+        
+        .option.correct {
+            background-color: var(--correct-color);
+            color: black;
+        }
+        
+        .option.incorrect {
+            background-color: var(--error-color);
+            color: black;
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .result-detail {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-number {
+            text-align: right;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .summary div {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .question-content {
+            margin-bottom: 20px;
+        }
+        
+        .graph {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .equation {
+            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2em;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 4px;
+            animation: fadeInOut 3s forwards;
+            z-index: 100;
+        }
+        
+        .alert-correct {
+            background-color: var(--correct-color);
+            color: black;
+        }
+        
+        .alert-incorrect {
+            background-color: var(--error-color);
+            color: black;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .controls button {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Discrete Mathematics Mid-Exam Quiz</h1>
+        
+        <!-- Topic Selection Screen -->
+        <div id="topic-selection" class="card">
+            <h2>Select a Topic</h2>
+            <button class="topic-btn" data-topic="sets">Sets</button>
+            <button class="topic-btn" data-topic="functions">Functions</button>
+            <button class="topic-btn" data-topic="sequences">Sequences</button>
+            <button class="topic-btn" data-topic="counting1">Counting I</button>
+            <button class="topic-btn" data-topic="counting2">Counting II</button>
+            <button class="topic-btn" data-topic="induction">Mathematical Induction</button>
+            <button class="topic-btn" data-topic="graphs">Graphs</button>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            
+            <div class="question-number" id="question-number">Question 1 of 20</div>
+            
+            <div class="card">
+                <div id="question-container">
+                    <div class="question-content" id="question-text"></div>
+                    <div class="options" id="options-container"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="prev-btn" disabled>Previous</button>
+                <button id="next-btn">Next</button>
+                <button id="submit-btn" class="hidden">Submit Quiz</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <div class="card">
+                <h2>Quiz Results</h2>
+                <div class="result" id="result-text"></div>
+                
+                <div class="summary">
+                    <div>
+                        <p>Total Questions</p>
+                        <p class="score">20</p>
+                    </div>
+                    <div>
+                        <p>Correct Answers</p>
+                        <p class="score" id="correct-count">0</p>
+                    </div>
+                    <div>
+                        <p>Your Score</p>
+                        <p class="score" id="score-percentage">0%</p>
+                    </div>
+                </div>
+                
+                <button id="review-btn">Review Answers</button>
+                <button id="back-to-topics-btn">Back to Topics</button>
+            </div>
+        </div>
+        
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden">
+            <h2>Review Answers</h2>
+            <div id="review-container"></div>
+            <button id="back-to-results-btn">Back to Results</button>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz state
+        const state = {
+            currentTopic: '',
+            questions: [],
+            currentQuestionIndex: 0,
+            userAnswers: [],
+            score: 0
+        };
+        
+        // Constants
+        const TOTAL_QUESTIONS = 20;
+        
+        // DOM elements
+        const topicSelection = document.getElementById('topic-selection');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const reviewScreen = document.getElementById('review-screen');
+        const questionNumber = document.getElementById('question-number');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultText = document.getElementById('result-text');
+        const correctCount = document.getElementById('correct-count');
+        const scorePercentage = document.getElementById('score-percentage');
+        const progressBar = document.getElementById('progress');
+        const reviewContainer = document.getElementById('review-container');
+        
+        // Event listeners
+        document.querySelectorAll('.topic-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                state.currentTopic = button.dataset.topic;
+                loadQuestions(state.currentTopic);
+            });
+        });
+        
+        prevBtn.addEventListener('click', goToPreviousQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        submitBtn.addEventListener('click', submitQuiz);
+        document.getElementById('review-btn').addEventListener('click', showReviewScreen);
+        document.getElementById('back-to-topics-btn').addEventListener('click', backToTopics);
+        document.getElementById('back-to-results-btn').addEventListener('click', () => {
+            reviewScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+        });
+        
+        // Load questions based on selected topic
+        function loadQuestions(topic) {
+            state.questions = quizData[topic] || [];
+            state.currentQuestionIndex = 0;
+            state.userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+            state.score = 0;
+            
+            // Show quiz screen
+            topicSelection.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            // Display first question
+            displayQuestion();
+        }
+        
+        // Display the current question
+        function displayQuestion() {
+            const question = state.questions[state.currentQuestionIndex];
+            questionNumber.textContent = `Question ${state.currentQuestionIndex + 1} of ${TOTAL_QUESTIONS}`;
+            
+            // Update progress bar
+            progressBar.style.width = `${((state.currentQuestionIndex + 1) / TOTAL_QUESTIONS) * 100}%`;
+            
+            // Display question text with any graphs/equations
+            if (question.graph) {
+                questionText.innerHTML = `<p>${question.text}</p><div class="graph">${question.graph}</div>`;
+            } else if (question.equation) {
+                questionText.innerHTML = `<p>${question.text}</p><div class="equation">${question.equation}</div>`;
+            } else {
+                questionText.innerHTML = `<p>${question.text}</p>`;
+            }
+            
+            // Display options
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                // If this option is already selected
+                if (state.userAnswers[state.currentQuestionIndex] === index) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update buttons
+            prevBtn.disabled = state.currentQuestionIndex === 0;
+            
+            if (state.currentQuestionIndex === TOTAL_QUESTIONS - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+        
+        // Handle option selection
+        function selectOption(optionIndex) {
+            state.userAnswers[state.currentQuestionIndex] = optionIndex;
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+                if (parseInt(option.dataset.index) === optionIndex) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+        
+        // Navigate to previous question
+        function goToPreviousQuestion() {
+            if (state.currentQuestionIndex > 0) {
+                state.currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+        
+        // Navigate to next question
+        function goToNextQuestion() {
+            if (state.currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                // Check if an option is selected
+                if (state.userAnswers[state.currentQuestionIndex] !== null) {
+                    const currentQuestion = state.questions[state.currentQuestionIndex];
+                    const userAnswer = state.userAnswers[state.currentQuestionIndex];
+                    
+                    // Check if answer is correct and show alert
+                    if (userAnswer === currentQuestion.correctIndex) {
+                        showAlert('Correct!', true);
+                    } else {
+                        showAlert('Incorrect! The correct answer is: ' + currentQuestion.options[currentQuestion.correctIndex], false);
+                    }
+                    
+                    state.currentQuestionIndex++;
+                    displayQuestion();
+                } else {
+                    showAlert('Please select an answer', false);
+                }
+            }
+        }
+        
+        // Submit the quiz
+        function submitQuiz() {
+            // Check if the last question has been answered
+            if (state.userAnswers[state.currentQuestionIndex] === null) {
+                showAlert('Please select an answer', false);
+                return;
+            }
+            
+            // Calculate score
+            calculateScore();
+            
+            // Show results screen
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            // Display results
+            correctCount.textContent = state.score;
+            scorePercentage.textContent = `${(state.score / TOTAL_QUESTIONS) * 100}%`;
+            
+            // Feedback based on score
+            if (state.score === TOTAL_QUESTIONS) {
+                resultText.textContent = 'Perfect Score! Excellent job!';
+            } else if (state.score >= Math.floor(TOTAL_QUESTIONS * 0.8)) {
+                resultText.textContent = 'Great job! You did very well!';
+            } else if (state.score >= Math.floor(TOTAL_QUESTIONS * 0.6)) {
+                resultText.textContent = 'Good effort! You passed the quiz.';
+            } else {
+                resultText.textContent = 'Keep practicing! You can improve.';
+            }
+        }
+        
+        // Calculate the final score
+        function calculateScore() {
+            state.score = 0;
+            state.userAnswers.forEach((answer, index) => {
+                if (answer === state.questions[index].correctIndex) {
+                    state.score++;
+                }
+            });
+        }
+        
+        // Show alert message
+        function showAlert(message, isCorrect) {
+            // Remove any existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alert = document.createElement('div');
+            alert.className = `alert ${isCorrect ? 'alert-correct' : 'alert-incorrect'}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            // Remove alert after animation
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+        
+        // Show review screen
+        function showReviewScreen() {
+            resultsScreen.classList.add('hidden');
+            reviewScreen.classList.remove('hidden');
+            
+            reviewContainer.innerHTML = '';
+            state.questions.forEach((question, index) => {
+                const userAnswer = state.userAnswers[index];
+                const isCorrect = userAnswer === question.correctIndex;
+                
+                const questionElement = document.createElement('div');
+                questionElement.className = `result-detail ${isCorrect ? 'correct' : 'incorrect'}`;
+                
+                // Question display with graph or equation if available
+                let questionHTML = `<h3>Question ${index + 1}</h3><p>${question.text}</p>`;
+                
+                if (question.graph) {
+                    questionHTML += `<div class="graph">${question.graph}</div>`;
+                } else if (question.equation) {
+                    questionHTML += `<div class="equation">${question.equation}</div>`;
+                }
+                
+                // User's answer and correct answer
+                questionHTML += `<p>Your answer: ${question.options[userAnswer]}</p>`;
+                
+                if (!isCorrect) {
+                    questionHTML += `<p>Correct answer: ${question.options[question.correctIndex]}</p>`;
+                }
+                
+                questionElement.innerHTML = questionHTML;
+                reviewContainer.appendChild(questionElement);
+            });
+        }
+        
+        // Go back to topic selection
+        function backToTopics() {
+            resultsScreen.classList.add('hidden');
+            topicSelection.classList.remove('hidden');
+        }
+        
+        // Quiz data
+        const quizData = {
+            sets: [
+                {
+                    text: "If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ∩ B?",
+                    options: ["{3, 4}", "{1, 2, 5, 6}", "{1, 2, 3, 4, 5, 6}", "∅"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <ellipse cx="100" cy="100" rx="70" ry="60" fill="rgba(52, 152, 219, 0.3)" stroke="rgb(52, 152, 219)" />
+                        <text x="60" y="85" font-family="Arial" font-size="14">A</text>
+                        <text x="55" y="105" font-family="Arial" font-size="12">{1,2,3,4}</text>
+                        
+                        <ellipse cx="200" cy="100" rx="70" ry="60" fill="rgba(231, 76, 60, 0.3)" stroke="rgb(231, 76, 60)" />
+                        <text x="215" y="85" font-family="Arial" font-size="14">B</text>
+                        <text x="190" y="105" font-family="Arial" font-size="12">{3,4,5,6}</text>
+                        
+                        <path d="M 135 100 A 30 30 0 0 0 165 100 A 30 30 0 0 0 135 100" fill="rgba(142, 68, 173, 0.5)" />
+                        <text x="140" y="105" font-family="Arial" font-size="12">{3,4}</text>
+                    </svg>`
+                },
+                {
+                    text: "Let U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, A = {1, 3, 5, 7, 9}, and B = {2, 4, 6, 8}. What is (A ∪ B)ᶜ?",
+                    options: ["{10}", "{1, 3, 5, 7, 9}", "{2, 4, 6, 8}", "∅"],
+                    correctIndex: 0,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <rect x="30" y="30" width="240" height="140" fill="#f1f1f1" stroke="black" />
+                        <text x="35" y="50" font-family="Arial" font-size="12">U = {1,2,3,4,5,6,7,8,9,10}</text>
+                        
+                        <ellipse cx="110" cy="110" rx="70" ry="50" fill="rgba(52, 152, 219, 0.3)" stroke="rgb(52, 152, 219)" />
+                        <text x="100" y="110" font-family="Arial" font-size="12">A</text>
+                        
+                        <ellipse cx="190" cy="110" rx="70" ry="50" fill="rgba(231, 76, 60, 0.3)" stroke="rgb(231, 76, 60)" />
+                        <text x="180" y="110" font-family="Arial" font-size="12">B</text>
+                        
+                        <circle cx="250" cy="50" r="15" fill="rgba(142, 68, 173, 0.5)" stroke="rgb(142, 68, 173)" />
+                        <text x="245" y="55" font-family="Arial" font-size="12">10</text>
+                    </svg>`
+                },
+                {
+                    text: "The power set of {a, b} is:",
+                    options: ["{∅, {a}, {b}, {a, b}}", "{a, b}", "{∅, a, b, {a, b}}", "{{a}, {b}, {a, b}}"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If A = {1, 2, 3} and B = {x, y, z}, how many elements are in A × B?",
+                    options: ["3", "6", "9", "12"],
+                    correctIndex: 2,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <rect x="60" y="40" width="180" height="120" fill="none" stroke="white" />
+                        
+                        <text x="120" y="30" font-family="Arial" font-size="14">A × B</text>
+                        
+                        <text x="80" y="60" font-family="Arial" font-size="12">(1,x)</text>
+                        <text x="130" y="60" font-family="Arial" font-size="12">(1,y)</text>
+                        <text x="180" y="60" font-family="Arial" font-size="12">(1,z)</text>
+                        
+                        <text x="80" y="100" font-family="Arial" font-size="12">(2,x)</text>
+                        <text x="130" y="100" font-family="Arial" font-size="12">(2,y)</text>
+                        <text x="180" y="100" font-family="Arial" font-size="12">(2,z)</text>
+                        
+                        <text x="80" y="140" font-family="Arial" font-size="12">(3,x)</text>
+                        <text x="130" y="140" font-family="Arial" font-size="12">(3,y)</text>
+                        <text x="180" y="140" font-family="Arial" font-size="12">(3,z)</text>
+                    </svg>`
+                },
+                {
+                    text: "Let A = {1, 2, 3, 4} and B = {3, 4, 5, 6}. What is A - B?",
+                    options: ["{1, 2}", "{5, 6}", "{1, 2, 5, 6}", "{3, 4}"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If |A| = 5 and |B| = 3, what is |A × B|?",
+                    options: ["8", "15", "2", "15"],
+                    correctIndex: 1,
+                    equation: "|A × B| = |A| × |B| = 5 × 3 = 15"
+                },
+                {
+                    text: "If A = {1, 2, 3} and P(A) is the power set of A, what is |P(A)|?",
+                    options: ["3", "6", "8", "9"],
+                    correctIndex: 2,
+                    equation: "|P(A)| = 2^|A| = 2^3 = 8"
+                },
+                {
+                    text: "If A = {1, 2, 3, 4, 5}, B = {4, 5, 6, 7}, and C = {3, 5, 7, 9}, what is A ∩ B ∩ C?",
+                    options: ["{3, 5, 7}", "{5}", "{3, 4, 5}", "∅"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The symmetric difference of sets A and B, denoted A △ B, is defined as (A - B) ∪ (B - A). If A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A △ B?",
+                    options: ["{1, 2, 5, 6}", "{3, 4}", "{1, 2, 3, 4, 5, 6}", "∅"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If A = {x | x is an integer and -3 ≤ x < 5}, what is |A|?",
+                    options: ["7", "8", "9", "10"],
+                    correctIndex: 1,
+                    equation: "A = {-3, -2, -1, 0, 1, 2, 3, 4}"
+                },
+                {
+                    text: "Let A = {1, 2, 3}, B = {2, 3, 4}, and C = {3, 4, 5}. What is (A ∪ B) ∩ C?",
+                    options: ["{3}", "{3, 4}", "{2, 3, 4}", "{1, 2, 3, 4, 5}"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If A and B are disjoint sets with |A| = 5 and |B| = 7, what is |A ∪ B|?",
+                    options: ["12", "35", "0", "5"],
+                    correctIndex: 0,
+                    equation: "|A ∪ B| = |A| + |B| - |A ∩ B| = 5 + 7 - 0 = 12"
+                },
+                {
+                    text: "If A = {1, 2, 3, 4}, what is the cardinality of the set of all subsets of A that contain at least 2 elements?",
+                    options: ["11", "10", "14", "16"],
+                    correctIndex: 0
+                },
+                {
+                    text: "Let U = {1, 2, 3, 4, 5, 6, 7, 8, 9}, A = {1, 3, 5, 7, 9}, and B = {1, 2, 3, 4, 5}. What is A' ∩ B'?",
+                    options: ["{6, 7, 8, 9}", "{6, 8}", "{2, 4}", "{1, 3, 5}"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If A = {1, 2, 3} and B = {x | x is a positive integer less than 4}, then:",
+                    options: ["A ⊂ B", "B ⊂ A", "A = B", "A and B are disjoint"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If A = {a, b, c, d} and B = {b, d, e, f}, what is |A ∪ B|?",
+                    options: ["4", "6", "8", "2"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The Cartesian product {1, 2} × {a, b, c} equals:",
+                    options: ["{(1, a), (1, b), (1, c), (2, a), (2, b), (2, c)}", "{(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3)}", "{(1, a), (2, b), (3, c)}", "{(1, a, 2, b, 3, c)}"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If A ⊆ B and B ⊆ C, which of the following must be true?",
+                    options: ["A = C", "A ⊆ C", "B = C", "A = B"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If U is the universal set and A and B are sets such that A ∪ B = U and A ∩ B = ∅, then A and B are:",
+                    options: ["Equal", "Subsets", "Complements", "Overlapping"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If A has m elements and B has n elements, how many elements does the power set of A × B have?",
+                    options: ["2^(m×n)", "2^m × 2^n", "(2^m)^n", "m^n"],
+                    correctIndex: 0,
+                    equation: "|P(A × B)| = 2^|A×B| = 2^(m×n)"
+                }
+            ],
+            
+            functions: [
+                {
+                    text: "A function f: X → Y is injective (one-to-one) if:",
+                    options: ["For every y in Y, there exists an x in X such that f(x) = y", "For all x₁, x₂ in X, if f(x₁) = f(x₂), then x₁ = x₂", "For all y in Y, there exists a unique x in X such that f(x) = y", "f maps each element of X to every element of Y"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="180" viewBox="0 0 300 180">
+                        <!-- Domain X -->
+                        <ellipse cx="80" cy="90" rx="40" ry="70" fill="rgba(52, 152, 219, 0.3)" stroke="rgb(52, 152, 219)" />
+                        <text x="75" y="40" font-family="Arial" font-size="14">X</text>
+                        
+                        <circle cx="80" cy="50" r="4" fill="black" />
+                        <text x="65" y="55" font-family="Arial" font-size="12">x₁</text>
+                        
+                        <circle cx="80" cy="90" r="4" fill="black" />
+                        <text x="65" y="95" font-family="Arial" font-size="12">x₂</text>
+                        
+                        <circle cx="80" cy="130" r="4" fill="black" />
+                        <text x="65" y="135" font-family="Arial" font-size="12">x₃</text>
+                        
+                        <!-- Codomain Y -->
+                        <ellipse cx="220" cy="90" rx="40" ry="70" fill="rgba(231, 76, 60, 0.3)" stroke="rgb(231, 76, 60)" />
+                        <text x="215" y="40" font-family="Arial" font-size="14">Y</text>
+                        
+                        <circle cx="220" cy="50" r="4" fill="black" />
+                        <text x="230" y="55" font-family="Arial" font-size="12">y₁</text>
+                        
+                        <circle cx="220" cy="90" r="4" fill="black" />
+                        <text x="230" y="95" font-family="Arial" font-size="12">y₂</text>
+                        
+                        <circle cx="220" cy="130" r="4" fill="black" />
+                        <text x="230" y="135" font-family="Arial" font-size="12">y₃</text>
+                        
+                        <!-- Function Mapping -->
+                        <path d="M 84 50 Q 150 40, 216 50" stroke="black" fill="transparent" />
+                        <path d="M 84 90 Q 150 80, 216 90" stroke="black" fill="transparent" />
+                        <path d="M 84 130 Q 150 140, 216 130" stroke="black" fill="transparent" />
+                    </svg>`
+                },
+                {
+                    text: "If f: A → B is a bijection and |A| = 10, then |B| equals:",
+                    options: ["10", "Less than 10", "Greater than 10", "Cannot be determined"],
+                    correctIndex: 0
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = 3x - 5. The inverse function f⁻¹(x) is:",
+                    options: ["f⁻¹(x) = (x + 5)/3", "f⁻¹(x) = (5 - x)/3", "f⁻¹(x) = 3x + 5", "f⁻¹(x) = -3x - 5"],
+                    correctIndex: 0,
+                    equation: "y = 3x - 5 ⟹ x = (y + 5)/3 ⟹ f⁻¹(x) = (x + 5)/3"
+                },
+                {
+                    text: "If f: X → Y is surjective, which statement must be true?",
+                    options: ["|X| = |Y|", "|X| ≤ |Y|", "|X| ≥ |Y|", "|X| < |Y|"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If f: X → Y and g: Y → Z are both injective functions, then the composition g ∘ f is:",
+                    options: ["Always injective", "Always surjective", "Always bijective", "None of the above"],
+                    correctIndex: 0
+                },
+                {
+                    text: "How many different functions can be defined from a set A to a set B, where |A| = 3 and |B| = 4?",
+                    options: ["12", "64", "24", "81"],
+                    correctIndex: 3,
+                    equation: "|B|^|A| = 4^3 = 64"
+                },
+                {
+                    text: "If f: X → Y is a bijection, then:",
+                    options: ["|X| can be different from |Y|", "f is both injective and surjective", "f⁻¹ does not exist", "f⁻¹ is not a function"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The floor function ⌊x⌋ maps a real number x to the greatest integer less than or equal to x. This function is:",
+                    options: ["Injective and surjective", "Injective but not surjective", "Surjective but not injective", "Neither injective nor surjective"],
+                    correctIndex: 2,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Coordinate axes -->
+                        <line x1="20" y1="100" x2="280" y2="100" stroke="white" />
+                        <line x1="150" y1="20" x2="150" y2="180" stroke="white" />
+                        <text x="275" y="115" fill="white">x</text>
+                        <text x="155" y="25" fill="white">y</text>
+                        
+                        <!-- Floor function plot -->
+                        <line x1="90" y1="60" x2="130" y2="60" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="130" y1="100" x2="170" y2="100" stroke="#bb86fc" stroke-width="2" />
+                        <line x1="170" y1="140" x2="210" y2="140" stroke="#bb86fc" stroke-width="2" />
+                        
+                        <!-- Open circles at jump points -->
+                        <circle cx="130" cy="100" r="3" fill="none" stroke="#bb86fc" />
+                        <circle cx="130" cy="60" r="3" fill="#bb86fc" />
+                        <circle cx="170" cy="140" r="3" fill="#bb86fc" />
+                        <circle cx="170" cy="100" r="3" fill="none" stroke="#bb86fc" />
+                        
+                        <text x="170" y="50" fill="white" font-family="Arial" font-size="12">⌊x⌋</text>
+                    </svg>`
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = x². This function is:",
+                    options: ["Injective and surjective", "Injective but not surjective", "Surjective but not injective", "Neither injective nor surjective"],
+                    correctIndex: 3,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Coordinate axes -->
+                        <line x1="20" y1="100" x2="280" y2="100" stroke="white" />
+                        <line x1="150" y1="20" x2="150" y2="180" stroke="white" />
+                        <text x="275" y="115" fill="white">x</text>
+                        <text x="155" y="25" fill="white">y</text>
+                        
+                        <!-- Parabola -->
+                        <path d="M 50 160 Q 100 130, 150 100 Q 200 70, 250 40" stroke="#bb86fc" fill="transparent" stroke-width="2" />
+                        
+                        <text x="200" y="50" fill="white" font-family="Arial" font-size="12">f(x) = x²</text>
+                    </svg>`
+                },
+                {
+                    text: "If the function f: X → Y is a bijection, which of the following must be true about f⁻¹ ∘ f?",
+                    options: ["f⁻¹ ∘ f = Iᵪ (the identity function on X)", "f⁻¹ ∘ f = Iᵧ (the identity function on Y)", "f⁻¹ ∘ f = f ∘ f⁻¹", "f⁻¹ ∘ f is not defined"],
+                    correctIndex: 0
+                },
+                {
+                    text: "If f: A → B and g: B → C are both surjective functions, then the composition g ∘ f is:",
+                    options: ["Always injective", "Always surjective", "Always bijective", "None of the above"],
+                    correctIndex: 1
+                },
+                {
+                    text: "How many bijections are there from a set with 4 elements to itself?",
+                    options: ["16", "24", "64", "256"],
+                    correctIndex: 1,
+                    equation: "4! = 24"
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = 2x + 3 and g: ℝ → ℝ be defined by g(x) = x² - 1. What is (g ∘ f)(2)?",
+                    options: ["47", "49", "51", "53"],
+                    correctIndex: 0,
+                    equation: "(g ∘ f)(2) = g(f(2)) = g(2×2 + 3) = g(7) = 7² - 1 = 49 - 1 = 48"
+                },
+                {
+                    text: "If f: X → Y is injective and |X| = |Y| = n, then f is:",
+                    options: ["Not surjective", "Bijective", "Neither injective nor surjective", "Cannot be determined"],
+                    correctIndex: 1
+                },
+                {
+                    text: "For a function f: X → Y, the range of f is:",
+                    options: ["The set X", "The set Y", "The set {f(x) | x ∈ X}", "The set {x ∈ X | f(x) ∈ Y}"],
+                    correctIndex: 2
+                },
+                {
+                    text: "If f: X → Y and |X| < |Y|, which of the following must be true?",
+                    options: ["f is not injective", "f is not surjective", "f is neither injective nor surjective", "f is bijective"],
+                    correctIndex: 1
+                },
+                {
+                    text: "Let f: ℝ → ℝ be defined by f(x) = e^x. This function is:",
+                    options: ["Injective and surjective", "Injective but not surjective", "Surjective but not injective", "Neither injective nor surjective"],
+                    correctIndex: 1,
+                    graph: `<svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Coordinate axes -->
+                        <line x1="20" y1="150" x2="280" y2="150" stroke="white" />
+                        <line x1="50" y1="20" x2="50" y2="180" stroke="white" />
+                        <text x="275" y="165" fill="white">x</text>
+                        <text x="55" y="25" fill="white">y</text>
+                        
+                        <!-- Exponential function -->
+                        <path d="M 20 150 Q 80 150, 120 120 Q 160 90, 180 60 Q 200 30, 280 10" stroke="#bb86fc" fill="transparent" stroke-width="2" />
+                        
+                        <text x="200" y="50" fill="white" font-family="Arial" font-size="12">f(x) = e^x</text>
+                    </svg>`
+                },
+                {
+                    text: "If f: X → Y is a function and A and B are subsets of X, then f(A ∩ B) is:",
+                    options: ["Always equal to f(A) ∩ f(B)", "Always a subset of f(A) ∩ f(B)", "Always a superset of f(A) ∩ f(B)", "Not comparable to f(A) ∩ f(B) in general"],
+                    correctIndex: 1
+                },
+                {
+                    text: "The number of surjective functions from a set X with n elements to a set Y with 2 elements, where n ≥ 2, is:",
+                    options: ["2^n", "2^n - 2", "n^2", "2^n - n"],
+                    correctIndex: 1
+                },
+                {
+                    text: "If f: X → Y and g: Y → Z are functions, which of the following is true?",
+                    options: ["If f and g are both injective, then g ∘ f is injective", "If g ∘ f is injective, then both f and g must be injective", "If g ∘ f is surjective, then both f and g must be surjective", "If f and g are both surjective, then g ∘ f is injective"],
+                    correctIndex: 0
+                }
+            ],
+            
+            sequences: [
+                {
+                    text: "What is the next term in the sequence: 3, 7, 11, 15, ...?",
+                    options: ["18", "19", "20", "21"],
+                    correctIndex: 1,
+                    equation: "a₁ = 3, d = 4, a₅ = a₁ + 4(5-1) = 3 + 16 = 19"
+                },
+                {
+                    text: "Find the general term (nth term) of the arithmetic sequence: 5, 9, 13, 17, ...",
+                    options: ["aₙ = 5n", "aₙ = 4n + 1", "aₙ = 4n - 3", "aₙ = 3n + 2"],
+                    correctIndex: 1,
+                    equation: "a₁ = 5, d = 4, aₙ = a₁ + (n-1)d = 5 + 4(n-1) = 5 + 4n - 4 = 4n + 1"
+                },
+                {
+                    text: "What is the sum of the first 10 terms of the sequence: 3, 6, 9, 12, ...?",
+                    options: ["165", "155", "150", "145"],
+                    correctIndex: 0,
+                    equation: "S₁₀ = n/2 · (a₁ + aₙ) = 10/2 · (3 + 30) = 5 · 33 = 165"
+                },
+                {
+                    text: "Find the 8th term of the geometric sequence where a₁ = 3 and r = 2.",
+                    options: ["384", "192", "768", "96"],
+                    correctIndex: 0,
+                    equation: "a₈ = a₁ · r^(8-1) = 3 · 2^7 = 3 · 128 = 384"
+                },
+                {
+                    text: "For the sequence defined by aₙ = 2n² - 1, what is a₅?",
+                    options: ["49", "24", "51", "50"],
+                    correctIndex: 0,
+                    equation: "a₅ = 2(5)² - 1 = 2 · 25 - 1 = 50 - 1 = 49"
+                },
+                {
+                    text: "What is the common ratio in the geometric sequence: 6, 18, 54, 162, ...?",
+                    options: ["6", "3", "12", "9"],
+                    correctIndex: 1,
+                    equation: "r = a₂/a₁ = 18/6 = 3"
+                },
+                {
+                    text: "Find the sum of the infinite geometric series 3 + 3/4 + 3/16 + 3/64 + ...",
+                    options: ["3.75", "4", "4.25", "4.5"],
+                    correctIndex: 1,
+                    equation: "S = a₁/(1-r) = 3/(1-1/4) = 3/(3/4) = 3 · 4/3 = 4"
+                },
+                {
+                    text: "What is the 10th Fibonacci number if F₁ = 1, F₂ = 1, and Fₙ = Fₙ₋₁ + Fₙ₋₂ for n ≥ 3?",
+                    options: ["55", "89", "54", "144"],
+                    correctIndex: 0,
+                    equation: "F₁ = 1, F₂ = 1, F₃ = 2, F₄ = 3, F₅ = 5, F₆ = 8, F₇ = 13, F₈ = 21, F₉ = 34, F₁₀ = 55"
+                },
+                {
+                    text: "For the sequence defined by aₙ = n(n+1)/2, what is a₁₀?",
+                    options: ["45", "55", "60", "50"],
+                    correctIndex: 1,
+                    equation: "a₁₀ = 10(10+1)/2 = 10·11/2 = 110/2 = 55"
+                },
+                {
+                    text: "If a sequence is defined recursively by a₁ = 2 and aₙ₊₁ = 3aₙ - 1 for n ≥ 1, what is a₃?",
+                    options: ["14", "15", "16", "17"],
+                    correctIndex: 0,
+                    equation: "a₂ = 3a₁ - 1 = 3·2 - 1 = 6 - 1 = 5\na₃ = 3a₂ - 1 = 3·5 - 1 = 15 - 1 = 14"
+                },
+                {
+                    text: "The sequence 1, 8, 27, 64, ... can be described by:",
+                    options: ["aₙ = n³", "aₙ = n²", "aₙ = 3ⁿ", "aₙ = n⁴"],
+                    correctIndex: 0
+                },
+                {
+                    text: "What is the sum of the first n terms of an arithmetic sequence with first term a and common difference d?",
+                    options: ["n(a + d)", "n(a + n)", "n(2a + (n-1)d)/2", "n(a + nd)/2"],
+                    correctIndex: 2,
+                    equation: "Sₙ = n/2 · (a₁ + aₙ) = n/2 · (a + a + (n-1)d) = n/2 · (2a + (n-1)d)"
+                },
+                {
+                    text: "Find the value of n if the sum of the first n terms of the arithmetic sequence 5, 10, 15, 20, ... equals 605.",
+                    options: ["11", "22", "10", "12"],
+                    correctIndex: 0,
+                    equation: "Sₙ = n/2 · (a₁ + aₙ) = n/2 · (5 + 5n) = 5n/2 · (1 + n) = 605"
+                },
+                {
+                    text: "For a geometric sequence, if a₁ = 5 and a₄ = 135, what is the common ratio r?",
+                    options: ["2", "3", "4", "5"],
+                    correctIndex: 1,
+                    equation: "a₄ = a₁ · r³ ⟹ 135 = 5 · r³ ⟹ r³ = 27 ⟹ r = 3"
+                },
+                {
+                    text: "Which of the following is not an arithmetic sequence?",
+                    options: ["3, 6, 9, 12, ...", "5, 8, 11, 14, ...", "1, 3, 9, 27, ...", "-4, -1, 2, 5, ..."],
+                    correctIndex: 2
+                },
+                {
+                    text: "If the sum of the first 6 terms of an arithmetic sequence is 27 and the common difference is 2, what is the first term?",
+                    options: ["-2", "0", "-3", "-1"],
+                    correctIndex: 2,
+                    equation: "S₆ = 6/2 · (a + a + 5d) = 3(2a + 10) = 27\n6a + 30 = 27\n6a = -3\na = -0.5"
+                },
+                {
+                    text: "What is the formula for the sum of the first n terms of a geometric sequence with first term a and common ratio r?",
+                    options: ["n(a + r)", "a(rⁿ - 1)/(r - 1) for r ≠ 1", "na", "a(1 - rⁿ)/(1 - r) for r ≠ 1"],
+                    correctIndex: 1,
+                    equation: "Sₙ = a(rⁿ - 1)/(r - 1) for r ≠ 1"
+                },
+                {
+                    text: "If a sequence is defined by aₙ = (-1)ⁿ⁺¹ · n, what is a₅?",
+                    options: ["5", "-5", "4", "-4"],
+                    correctIndex: 1,
+                    equation: "a₅ = (-1)⁵⁺¹ · 5 = (-1)⁶ · 5 = 1 · 5 = 5"
+                },
+                {
+                    text: "The sum of an infinite geometric series with first term a and common ratio r (where |r| < 1) is:",
+                    options: ["a/(1-r)", "a/(1+r)", "a·r/(1-r)", "a·r/(1+r)"],
+                    correctIndex: 0,
+                    equation: "S = a/(1-r) where |r| < 1"
+                },
+                {
+                    text: "Find the general term of the sequence: 1, 1/2, 1/3, 1/4, ...",
+                    options: ["aₙ = 1/n", "aₙ = n", "aₙ = 1/n²", "aₙ = 1/(n+1)"],
+                    correctIndex: 0
+                }
+            ],
+            
+            counting1: [
+                {
+                    text: "How many 3-digit numbers can be formed using the digits 1, 2, 3, 4, 5 without repetition?",
+                    options: ["60", "120", "125", "24"],
+                    correctIndex: 0,
+                    equation: "P(5,3) = 5!/(5-3)! = 5!/2! = 5·4·3·2!/2! = 5·4·3 = 60"
+                },
+                {
+                    text: "How many ways can 4 people be arranged in a row?",
+                    options: ["4", "16", "24", "12"],
+                    correctIndex: 2,
+                    equation: "4! = 4·3·2·1 = 24"
+                },
+                {
+                    text: "In how many ways can 3 distinct books be arranged on a shelf?",
+                    options: ["3", "6", "9", "27"],
+                    correctIndex: 1,
+                    equation: "3! = 3·2·1 = 6"
+                },
+                {
+                    text: "How many ways can we select a committee of 3 people from a group of 7 people?",
+                    options: ["35", "21", "210", "120"],
+                    correctIndex: 1,
+                    equation: "C(7,3) = 7!/(3!·4!) = (7·6·5·4!)/(3·2·1·4!) = 7·6·5/(3·2·1) = 35"
+                },
+                {
+                    text: "In how many ways can we form a 4-digit number using the digits 0, 1, 2, 3, 4, 5 if repetition is allowed and the number must be even?",
+                    options: ["625", "500", "750", "1000"],
+                    correctIndex: 1,
+                    equation: "For a 4-digit number, first digit cannot be 0.\nLast digit must be even: 0, 2, 4\nSo we have 5 choices for 1st digit (1-5), 6 choices for 2nd and 3rd digits, and 3 choices for last digit (0,2,4).\n5·6·6·3 = 540"
+                },
+                {
+                    text: "How many different 5-card hands can be dealt from a standard 52-card deck?",
+                    options: ["2,598,960", "311,875", "5^52", "52!/(5!(52-5)!)"],
+                    correctIndex: 0,
+                    equation: "C(52,5) = 52!/(5!·47!) = 2,598,960"
+                },
+                {
+                    text: "In how many ways can 5 people be seated at a round table if seating arrangements that can be obtained through rotation are considered the same?",
+                    options: ["5", "24", "120", "20"],
+                    correctIndex: 1,
+                    equation: "(5-1)! = 4! = 24"
+                },
+                {
+                    text: "How many ways can we arrange the letters of the word 'MATHEMATICS'?",
+                    options: ["11!", "11!/2!", "11!/(2!2!)", "11!/(2!2!2!)"],
+                    correctIndex: 3,
+                    equation: "11!/(2!2!2!) = 11!/(8) = 4,989,600"
+                },
+                {
+                    text: "How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5, 6 if no digit is repeated?",
+                    options: ["360", "720", "120", "1296"],
+                    correctIndex: 0,
+                    equation: "P(6,4) = 6!/(6-4)! = 6!/2! = 6·5·4·3·2!/2! = 6·5·4·3 = 360"
+                },
+                {
+                    text: "How many different ways can we arrange 4 red balls, 3 blue balls, and 2 green balls in a row if balls of the same color are indistinguishable?",
+                    options: ["9!", "9!/(4!3!2!)", "4!3!2!", "9^3"],
+                    correctIndex: 1,
+                    equation: "9!/(4!3!2!) = 1,260"
+                },
+                {
+                    text: "A bookshelf has 8 distinct books. In how many ways can we select 3 books from the shelf?",
+                    options: ["8C3 = 56", "8P3 = 336", "3^8 = 6561", "8^3 = 512"],
+                    correctIndex: 0,
+                    equation: "C(8,3) = 8!/(3!·5!) = 56"
+                },
+                {
+                    text: "How many bit strings of length 8 contain exactly 3 ones?",
+                    options: ["8!/3!", "8C3 = 56", "2^8 = 256", "3^8 = 6561"],
+                    correctIndex: 1,
+                    equation: "C(8,3) = 8!/(3!·5!) = 56"
+                },
+                {
+                    text: "In how many ways can 5 different prizes be distributed among 8 students if each student can receive at most one prize?",
+                    options: ["8P5 = 6,720", "8C5 = 56", "5^8 = 390,625", "8^5 = 32,768"],
+                    correctIndex: 0,
+                    equation: "P(8,5) = 8!/(8-5)! = 8!/3! = 8·7·6·5·4·3!/3! = 8·7·6·5·4 = 6,720"
+                },
+                {
+                    text: "How many ways can the letters of the word 'SIMPLE' be arranged if all letters must be used?",
+                    options: ["6! = 720", "6!/2! = 360", "6C6 = 1", "2^6 = 64"],
+                    correctIndex: 0,
+                    equation: "6! = 6·5·4·3·2·1 = 720"
+                },
+                {
+                    text: "A code consists of 3 letters followed by 2 digits. If repetition is allowed, how many different codes are possible?",
+                    options: ["26^3 × 10^2 = 175,760", "26 × 10 = 260", "(26+10)^5 = 36^5", "26! × 10!"],
+                    correctIndex: 0,
+                    equation: "26^3 · 10^2 = 17,576 · 100 = 1,757,600   
